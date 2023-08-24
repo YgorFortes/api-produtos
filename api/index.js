@@ -1,13 +1,13 @@
-import express from "express";
+const express = require( "express");
+const routes = require("./routes/index.js")
 
 const app = express();
 
-app.use(express.json())
-
 const port = 3000;
 
-app.get('/teste', (req, res)=> res.status(200).send({mensagem: 'Funcionando'}));
+routes(app);
+
 
 app.listen(port, ()=> console.log(`Servidor funcionando em: http://localhost:${port}/teste`));
 
-export default app;
+module.exports = app;
