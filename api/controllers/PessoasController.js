@@ -1,4 +1,4 @@
-const { where } = require('sequelize');
+const { where, NUMBER } = require('sequelize');
 const database = require('../models/index.js');
 
 class PessoaController {
@@ -34,7 +34,34 @@ class PessoaController {
       const novaPessoaCriada = await database.Pessoas.create(novaPessoa);
       res.status(201).json(novaPessoaCriada)
     }catch(erro){
-      console.log(erro)
+      return res.status(500).json(erro.message);
+    }
+  }
+
+  static async atualizarPessoa(req, res) {
+    const {id} = req.params;
+    const noasInfosPessoa = req.body;
+
+    try{
+      await database.Pessoas.update(noasInfosPessoa, 
+        {
+          where: {
+            id: Number(id)
+          }
+        }
+      )
+
+      const nomePessoaAtualizada = await database.Pessoas.findOne(
+        {
+          where: 
+          {
+            id: Number(id)
+          }
+        }
+      )
+      res.status(201).json(nomePessoaAtualizada);
+    }catch(erro){
+      return res.status(500).json(erro.message);
     }
   }
 }

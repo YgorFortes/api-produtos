@@ -7,5 +7,6 @@ router
 .get('/pessoas', PessoaController.listarPessoas)
 .get('/pessoas/:id', PessoaController.listarPessoaPorId)
 .post('/pessoas/:id', PessoaController.criarPessoa)
+.put('/pessoas/:id', PessoaController.atualizarPessoa)
 
 module.exports = router;
