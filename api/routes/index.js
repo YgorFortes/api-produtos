@@ -1,6 +1,7 @@
 const express = require("express");
 const pessoas = require("./pessoasRoute.js");
 const fornecedores = require('./fornecedoresRoute.js')
+const servicos = require('./servicosRoute.js')
 
 module.exports = app => {
   app.route("/teste").get((req, res) =>{
@@ -10,6 +11,7 @@ module.exports = app => {
     express.json(),
     pessoas,
     fornecedores,
+    servicos
     )
  
   
