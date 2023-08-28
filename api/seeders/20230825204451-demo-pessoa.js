@@ -15,7 +15,7 @@ module.exports = {
           funcao: 'Gerente',
           ativo: 1,
           createdAt : new Date(),
-           updatedAt : new Date()
+          updatedAt : new Date()
         },
         {
           id: 2,
@@ -51,7 +51,7 @@ module.exports = {
           funcao:'Funcionario',
           ativo :1,
           createdAt : new Date(),
-           updatedAt : new Date()
+          updatedAt : new Date()
          },
          {
            id :5,
