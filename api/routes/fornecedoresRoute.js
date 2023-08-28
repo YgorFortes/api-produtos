@@ -8,6 +8,7 @@ router
   .get('/fornecedores/:id',FornecedorController.listarFonecedorPorId)
   .post('/fornecedores', FornecedorController.criarFornecedor)
   .put('/fornecedores/:id', FornecedorController.atualizarFornecedor)
+  .delete('/fornecedores/:id', FornecedorController.deletarFornecedor)
 
 
 

@@ -54,6 +54,21 @@ class FornecedorController{
     }
   }
 
+  static async deletarFornecedor(req, res){
+    const {id} = req.params;
+    try {
+      await database.Fornecedores.destroy( 
+        {
+          where: {id: Number(id)}
+        }
+      )
+      res.status(200).json({mensagem: `Id ${id} deletado com sucesso`});
+    } catch (erro) {
+      return res.status(500).json(erro.message);
+    }
+  }
+
+
 }
 
 module.exports = FornecedorController;
