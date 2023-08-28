@@ -29,10 +29,9 @@ class PessoaController {
 
   static async criarPessoa (req, res) {
     const novaPessoa = req.body;
-
     try{
       const novaPessoaCriada = await database.Pessoas.create(novaPessoa);
-      res.status(201).json(novaPessoaCriada)
+      return res.status(201).json(novaPessoaCriada)
     }catch(erro){
       return res.status(500).json(erro.message);
     }
@@ -59,7 +58,7 @@ class PessoaController {
           }
         }
       )
-      res.status(201).json(nomePessoaAtualizada);
+      return res.status(201).json(nomePessoaAtualizada);
     }catch(erro){
       return res.status(500).json(erro.message);
     }
@@ -77,7 +76,7 @@ class PessoaController {
         }
       }
     )
-    res.status(201).json({mensagem: `Id: ${id} deletado`});
+    return res.status(201).json({mensagem: `Id: ${id} deletado`});
     }catch(erro){
       return res.status(500).json(erro.message);
     }

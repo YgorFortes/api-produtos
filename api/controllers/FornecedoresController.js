@@ -21,8 +21,19 @@ class FornecedorController{
             id: Number(id)
           }
         })
+        return res.status(200).json(resultadoFornecedorPorId)
     } catch (erro) {
-      
+      return res.status(500).json(erro.message);
+    }
+  }
+
+  static async criarFornecedor(req, res){
+    const novoFornecedor = req.body;
+    try {
+      const novoFornecedorCriado = await database.Fornecedores.create(novoFornecedor);
+      return res.status(201).json(novoFornecedorCriado);
+    } catch (erro) {
+      return res.status(500).json(erro.message);
     }
   }
 }

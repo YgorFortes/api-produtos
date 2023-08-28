@@ -5,6 +5,8 @@ const router = Router();
 
 router
   .get('/fornecedores', FornecedorController.listarFornecedores)
+  .get('/fornecedores/:id',FornecedorController.listarFonecedorPorId)
+  .post('/fornecedores', FornecedorController.criarFornecedor)
 
 
 
