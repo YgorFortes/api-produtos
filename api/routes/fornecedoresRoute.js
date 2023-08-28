@@ -7,6 +7,7 @@ router
   .get('/fornecedores', FornecedorController.listarFornecedores)
   .get('/fornecedores/:id',FornecedorController.listarFonecedorPorId)
   .post('/fornecedores', FornecedorController.criarFornecedor)
+  .put('/fornecedores/:id', FornecedorController.atualizarFornecedor)
 
 
 

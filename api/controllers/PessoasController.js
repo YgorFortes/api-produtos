@@ -50,7 +50,7 @@ class PessoaController {
         }
       )
 
-      const nomePessoaAtualizada = await database.Pessoas.findOne(
+      const pessoaAtualizada = await database.Pessoas.findOne(
         {
           where: 
           {
@@ -58,7 +58,7 @@ class PessoaController {
           }
         }
       )
-      return res.status(201).json(nomePessoaAtualizada);
+      return res.status(201).json(pessoaAtualizada);
     }catch(erro){
       return res.status(500).json(erro.message);
     }
