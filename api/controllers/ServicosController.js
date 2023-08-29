@@ -1,4 +1,3 @@
-const { NUMBER } = require("sequelize");
 const database = require("../models/index.js");
 
 class ServicosController {
