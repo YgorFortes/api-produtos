@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Servicos.init({
     tipo: DataTypes.STRING,
-    data_entrega: DataTypes.DATE,
+    data_entrega: DataTypes.DATEONLY,
     preco: DataTypes.FLOAT
   }, {
     sequelize,
