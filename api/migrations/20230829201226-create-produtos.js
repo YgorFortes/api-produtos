@@ -1,8 +1,11 @@
 'use strict';
+
+const { INTEGER } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Fornecedores', {
+    await queryInterface.createTable('Produtos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,15 +16,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      endereco: {
+      valor: {
+        allowNull: false,
+        type: Sequelize.FLOAT
+      },
+      modelo: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      telefone: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      cnpj: {
+      marca: {
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -36,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Fornecedores');
+    await queryInterface.dropTable('Produtos');
   }
 };
