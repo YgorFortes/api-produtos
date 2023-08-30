@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static async associate(models) {
       Produtos.belongsToMany(models.Fornecedores,{
-        through: "fornecedor_produto",
+        through: "FornecedorProduto",
         foreignKey: "produto_id"
       }
       )  

@@ -6,7 +6,6 @@ module.exports = {
  
       await queryInterface.bulkInsert('Pessoas', [
         {
-          id: 1,
           nome: 'ygor',
           idade: 24,
           cpf: '547-986-854-96',
@@ -18,7 +17,6 @@ module.exports = {
           updatedAt : new Date()
         },
         {
-          id: 2,
           nome: 'John Doe',
           idade: 24,
           cpf: '965-964-964-55',
@@ -27,10 +25,9 @@ module.exports = {
           funcao: 'Gerente',
           ativo: 1,
           createdAt : new Date(),
-           updatedAt : new Date()
+          updatedAt : new Date()
         },
         {
-          id: 3,
           nome: 'Jane Doe',
           idade: 32,
           cpf: '123-456-789-00',
@@ -42,7 +39,6 @@ module.exports = {
           updatedAt : new Date()
         },
         {
-          id: 4,
           nome: 'Bob Smith',
           idade: 45,
           cpf: '987-654-321-00',
@@ -54,7 +50,6 @@ module.exports = {
           updatedAt : new Date()
          },
          {
-           id :5,
            nome :'Alice Brown',
            idade :28,
            cpf :'111-222-333-44' ,
@@ -66,7 +61,6 @@ module.exports = {
            updatedAt : new Date()
          },
          {
-           id :6,
            nome :'Charlie Green' ,
            idade :39 ,
            cpf :'444 -555 -666 -77' ,
@@ -78,7 +72,6 @@ module.exports = {
            updatedAt : new Date()
          },
          {
-           id :7,
            nome :'Ronaldo' ,
            idade :55 ,
            cpf :'454 -565 -468 -63' ,
@@ -90,7 +83,6 @@ module.exports = {
            updatedAt : new Date()
          },
          {
-            id :9,
             nome :'Larissa Fortes' ,
             idade :24 ,
             cpf :'444 -555 -666 -77' ,
