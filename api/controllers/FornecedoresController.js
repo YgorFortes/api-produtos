@@ -4,7 +4,14 @@ class FornecedorController{
 
   static async listarFornecedores(req, res) {
     try {
-      const resultadoListaFornecedores = await database.Fornecedores.findAll();
+      const resultadoListaFornecedores = await database.Fornecedores.findAll(
+        {
+          include: {
+            model: database.Produtos,
+            atrrtibutes: [],
+          }
+        }
+      );
       return res.status(200).json(resultadoListaFornecedores);
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -16,7 +23,11 @@ class FornecedorController{
     try {
       const resultadoFornecedorPorId = await database.Fornecedores.findOne(
         {
-          where: {id: Number(id)}
+          where: {id: Number(id)},
+          include: {
+            model: database.Produtos,
+            atrrtibutes: [],
+          }
         })
         return res.status(200).json(resultadoFornecedorPorId)
     } catch (erro) {
@@ -25,7 +36,7 @@ class FornecedorController{
   }
 
   static async criarFornecedor(req, res){
-    const novoFornecedor = req.body;
+    const {novoFornecedor} = req.body;
     try {
       const novoFornecedorCriado = await database.Fornecedores.create(novoFornecedor);
       return res.status(201).json(novoFornecedorCriado);
