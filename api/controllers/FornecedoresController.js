@@ -8,8 +8,9 @@ class FornecedorController{
         {
           include: {
             model: database.Produtos,
-            atrrtibutes: [],
-          }
+            as: "produtos",
+            attributes: ['nome','valor','marca','modelo'],
+          },
         }
       );
       return res.status(200).json(resultadoListaFornecedores);
@@ -26,7 +27,8 @@ class FornecedorController{
           where: {id: Number(id)},
           include: {
             model: database.Produtos,
-            atrrtibutes: [],
+             as: "produtos",
+            attributes: ['nome','valor','marca','modelo'],
           }
         })
         return res.status(200).json(resultadoFornecedorPorId)
@@ -36,35 +38,46 @@ class FornecedorController{
   }
 
   static async criarFornecedor(req, res){
-    const {novoFornecedor} = req.body;
+    const {produtos, ...informacaoNovoFornecedor} = req.body;
+
     try {
-      const novoFornecedorCriado = await database.Fornecedores.create(novoFornecedor);
-      return res.status(201).json(novoFornecedorCriado);
+      const novoFornecedor = await database.Fornecedores.create(informacaoNovoFornecedor);
+      await novoFornecedor.setProdutos(produtos)
+      return res.status(200).json(novoFornecedor)
     } catch (erro) {
       return res.status(500).json(erro.message);
     }
   }
 
-  static async atualizarFornecedor(req, res){
+  static async atualizarFornecedor (req, res){
     const {id} = req.params;
-    const novaInforFornecedor = req.body;
+    const {produtos, infoFornecedor} = req.body;
+
     try {
-      await database.Fornecedores.update(novaInforFornecedor,
+       await database.Fornecedores.update(infoFornecedor,
         {
           where: {id: Number(id)}
         }
-      )
-      const fornecedorAtualizado = await database.Fornecedores.findOne(
+      );
+
+      const fornecedorAtualizadoEncontrado = await database.Fornecedores.findOne(
         {
-          where: {id: Number(id)}
-        }
-      )
-      return res.status(200).json(fornecedorAtualizado)
+          where: {id: Number(id)},
+          include: {
+            model: database.Produtos,
+             as: "produtos",
+            attributes: ['nome','valor','marca','modelo'],
+          }
+        },
+      );
+      await fornecedorAtualizadoEncontrado.setProdutos(produtos);
+      res.status(200).json(fornecedorAtualizadoEncontrado);
     } catch (erro) {
       return res.status(500).json(erro.message);
     }
   }
 
+  
   static async deletarFornecedor(req, res){
     const {id} = req.params;
     try {
@@ -72,7 +85,7 @@ class FornecedorController{
         {
           where: {id: Number(id)}
         }
-      )
+      );
       res.status(200).json({mensagem: `Id ${id} deletado com sucesso`});
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -81,5 +94,6 @@ class FornecedorController{
 
 
 }
+
 
 module.exports = FornecedorController;
