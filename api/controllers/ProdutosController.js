@@ -2,7 +2,7 @@ const database = require('../models/index.js');
 
 class ProdutosController{
 
-  static async listarProdutos(req, res){
+  static async listarProdutos(__, res){
 
     try {
       const resultadoListaProdutos = await database.Produtos.findAll(

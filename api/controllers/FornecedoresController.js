@@ -2,7 +2,7 @@ const database = require('../models/index.js');
 
 class FornecedorController{
 
-  static async listarFornecedores(req, res) {
+  static async listarFornecedores(__, res) {
     try {
       const resultadoListaFornecedores = await database.Fornecedores.findAll(
         {

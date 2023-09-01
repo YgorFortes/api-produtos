@@ -2,7 +2,7 @@ const database = require("../models/index.js");
 
 class ServicosController {
 
-  static async listarServicos(req,res){
+  static async listarServicos(__,res){
     try {
       const resultadoListaServicos = await database.Servicos.findAll({
         include: {
@@ -57,7 +57,6 @@ class ServicosController {
         {
           where: {id: Number(id)}
         });
-        console.log(novoServicoAtualizado);
         return res.status(200).json(novoServicoAtualizado);
     } catch (erro) {
       return res.status(500).json(erro.message);
