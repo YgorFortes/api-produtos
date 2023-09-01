@@ -6,6 +6,9 @@ const router = Router();
 router 
 .get('/produtos',ProdutosController.listarProdutos)
 .get('/produtos/:id', ProdutosController.listaProdutoPorId)
+.post('/produtos', ProdutosController.criarProduto)
+.put('/produtos/:id', ProdutosController.atualizarProduto)
+.delete('/produtos/:id', ProdutosController.deletarProduto)
 
 
 module.exports = router;
