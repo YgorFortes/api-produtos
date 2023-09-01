@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static async associate(models) {
       Fornecedores.belongsToMany(models.Produtos,{
         through: "FornecedorProduto",
+        as: "produtos",
         foreignKey: "fornecedor_id"
       }
       )  
@@ -21,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     nome: DataTypes.STRING,
     endereco: DataTypes.STRING,
     telefone: DataTypes.STRING,
-    cnpj: DataTypes.STRING
+    cnpj: DataTypes.STRING,
+    
   }, {
     sequelize,
     modelName: 'Fornecedores',
