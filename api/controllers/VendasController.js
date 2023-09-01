@@ -3,7 +3,7 @@ const database = require ('../models/index.js');
 
 class VendasController{
 
-  static async listarVendas(req, res){
+  static async listarVendas(__, res){
     try {
       const listarResultadoVendas = await database.Vendas.findAll(
         {

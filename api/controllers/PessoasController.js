@@ -1,7 +1,7 @@
 const database = require('../models/index.js');
 
 class PessoaController {
-  static async listarPessoas(req, res){
+  static async listarPessoas(__, res){
     try{
       const resultadoListaPessoas = await database.Pessoas.findAll();
       return res.status(200).json(resultadoListaPessoas)
