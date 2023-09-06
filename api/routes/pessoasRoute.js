@@ -4,7 +4,9 @@ const PessoaController = require('../controllers/PessoasController.js')
 const router = Router();
 
 router
-.get('/pessoas', PessoaController.listarPessoas)
+.get('/pessoas', PessoaController.listarTodasPessoas)
+.get('/pessoas/ativas', PessoaController.listarPessoasAtivas)
+.get('/pessoas/desativadas', PessoaController.listarPessoasDesativadas)
 .get('/pessoas/:id', PessoaController.listarPessoaPorId)
 .post('/pessoas/', PessoaController.criarPessoa)
 .post('/pessoas/:id/restaurar', PessoaController.restaurarPessoa)

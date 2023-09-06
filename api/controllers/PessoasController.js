@@ -1,9 +1,27 @@
 const database = require('../models/index.js');
 
 class PessoaController {
-  static async listarPessoas(__, res){
+  static async listarTodasPessoas(__, res){
+    try{
+      const resultadoListaPessoas = await database.Pessoas.scope('todas').findAll();
+      return res.status(200).json(resultadoListaPessoas)
+    }catch(erro){
+      return res.status(500).json(erro.message);
+    }
+  }
+
+  static async listarPessoasAtivas(__, res){
     try{
       const resultadoListaPessoas = await database.Pessoas.findAll();
+      return res.status(200).json(resultadoListaPessoas)
+    }catch(erro){
+      return res.status(500).json(erro.message);
+    }
+  }
+
+  static async listarPessoasDesativadas(__, res){
+    try{
+      const resultadoListaPessoas = await database.Pessoas.scope('desativadas').findAll();
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
       return res.status(500).json(erro.message);
