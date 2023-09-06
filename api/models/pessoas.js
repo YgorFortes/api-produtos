@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       Pessoas.hasMany(models.Servicos, {
         foreignKey: 'pessoa_id'
       })
+      Pessoas.hasMany(models.Vendas, {
+        foreignKey: 'pessoa_id'
+      })
     }
   }
   Pessoas.init({
@@ -25,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     ativo: DataTypes.BOOLEAN
   }, {
     sequelize,
+    paranoid:true,
     modelName: 'Pessoas',
   });
   return Pessoas;

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     marca: DataTypes.STRING
   }, {
     sequelize,
+    paranoid:true,
     modelName: 'Produtos',
   });
   return Produtos;

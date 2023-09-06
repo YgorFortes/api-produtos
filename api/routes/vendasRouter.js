@@ -7,6 +7,7 @@ router
 .get('/vendas', VendasController.listarVendas)
 .get('/vendas/:id', VendasController.listarVendaPorId)
 .post('/vendas', VendasController.criarVenda)
+.post('/vendas/:id/restaurar',VendasController.restaurarVenda)
 .put('/vendas/:id',VendasController.atualizarVenda)
 .delete('/vendas/:id',VendasController.deletarVenda)
 

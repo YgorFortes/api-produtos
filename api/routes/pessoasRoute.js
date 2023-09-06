@@ -6,7 +6,8 @@ const router = Router();
 router
 .get('/pessoas', PessoaController.listarPessoas)
 .get('/pessoas/:id', PessoaController.listarPessoaPorId)
-.post('/pessoas/:id', PessoaController.criarPessoa)
+.post('/pessoas/', PessoaController.criarPessoa)
+.post('/pessoas/:id/restaurar', PessoaController.restaurarPessoa)
 .put('/pessoas/:id', PessoaController.atualizarPessoa)
 .delete("/pessoas/:id", PessoaController.deletarPessoa)
 

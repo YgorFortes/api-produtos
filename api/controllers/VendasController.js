@@ -81,6 +81,19 @@ class VendasController{
       return res.status(500).json(erro.mensage)
     }
   }
+
+  static async restaurarVenda(req, res){
+    const {id} = req.params;
+    try {
+      await database.Vendas.restore(
+        {
+          where:{ id: Number(id)}
+        })
+      return res.status(200).json({mensagem: `Id: ${id} restaurado`});
+    } catch (erro) {
+      return res.status(500).json(erro.message);
+    }
+  }
 }
 
 module.exports = VendasController;

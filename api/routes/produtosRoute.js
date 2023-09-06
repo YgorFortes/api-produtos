@@ -7,6 +7,7 @@ router
 .get('/produtos',ProdutosController.listarProdutos)
 .get('/produtos/:id', ProdutosController.listaProdutoPorId)
 .post('/produtos', ProdutosController.criarProduto)
+.post('/produtos/:id/restaurar', ProdutosController.restaurarProduto)
 .put('/produtos/:id', ProdutosController.atualizarProduto)
 .delete('/produtos/:id', ProdutosController.deletarProduto)
 

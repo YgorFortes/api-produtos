@@ -7,6 +7,7 @@ router
 .get('/itemVendas',ItemVendasController.listarItemVendas)
 .get('/itemVendas/:id',ItemVendasController.listarItemVendasPorId)
 .post('/itemVendas',ItemVendasController.criarItemVendas)
+.post('/itemVendas/:id/restaurar', ItemVendasController.restaurarItemVendas)
 .put('/itemVendas/:id', ItemVendasController.atualizarItemVenda)
 .delete('/itemVendas/:id',ItemVendasController.deletarItemVenda)
 

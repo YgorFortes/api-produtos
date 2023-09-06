@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     valor: DataTypes.FLOAT
   }, {
     sequelize,
+    paranoid:true,
     modelName: 'ItemVendas',
   });
   return ItemVendas;
