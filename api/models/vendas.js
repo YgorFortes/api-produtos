@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     data_venda: DataTypes.DATE
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Vendas',
   });
   return Vendas;
