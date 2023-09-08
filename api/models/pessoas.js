@@ -19,13 +19,55 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Pessoas.init({
-    nome: DataTypes.STRING,
-    idade: DataTypes.INTEGER,
-    cpf: DataTypes.STRING,
-    email: DataTypes.STRING,
+    nome: {
+      type: DataTypes.STRING,
+      validate: {
+        validarNome(dado){
+          if(dado.length <3 ){
+            throw new Error('Nome deve ser maior que 3 caracteres')
+          }
+        }
+      }
+    },
+    idade: {
+      type: DataTypes.INTEGER,
+      validate:{
+        isInt: {
+          args: true,
+          msg: 'O campo idade precisa ser um campo inteiro'
+        }
+      }
+    },
+    cpf: {
+      type: DataTypes.STRING,
+      unique:true,
+      validate: {
+        is: {
+          args: /^\d{3}[\.-]?\d{3}[\.-]?\d{3}-?\d{2}$/,
+          msg: 'Dados do tipo cpf inválidos'
+        }
+        }
+    },
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: 'Dados do tipo email inválidos'
+        }
+      }
+    },
     endereco: DataTypes.STRING,
     funcao: DataTypes.STRING,
-    ativo: DataTypes.BOOLEAN
+    ativo: {
+      type: DataTypes.BOOLEAN,
+      validate:{
+        isIn: {
+          args: [[true, false]],
+          msg: 'O campo ativo precisa ser true ou false para cadastrar'
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid:true,

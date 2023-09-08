@@ -38,12 +38,22 @@ class FornecedorController{
   }
 
   static async criarFornecedor(req, res){
-    const {produtos, ...informacaoNovoFornecedor} = req.body;
+    const {cnpj,produtos, ...informacaoNovoFornecedor} = req.body;
 
     try {
-      const novoFornecedor = await database.Fornecedores.create(informacaoNovoFornecedor);
-      await novoFornecedor.setProdutos(produtos)
-      return res.status(200).json(novoFornecedor)
+      const [novoFornecedor, criado] = await database.Fornecedores.findOrCreate(
+        {
+          where: { cnpj : cnpj}, 
+          defaults: {...informacaoNovoFornecedor}
+        }
+      );
+
+      if(criado){
+        await novoFornecedor.setProdutos(produtos)
+        return res.status(200).json(novoFornecedor)
+      }else{
+        return res.status(409).json({mensagem: 'Cnpj já cadastrado'});
+      }
     } catch (erro) {
       return res.status(500).json(erro.message);
     }

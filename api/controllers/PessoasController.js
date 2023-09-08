@@ -45,10 +45,18 @@ class PessoaController {
   }
 
   static async criarPessoa (req, res) {
-    const novaPessoa = req.body;
+    const {cpf, ...novaPessoa} = req.body;
+    console.log(novaPessoa)
     try{
-      const novaPessoaCriada = await database.Pessoas.create(novaPessoa);
-      return res.status(201).json(novaPessoaCriada)
+      const [novaPessoaCriada, criado] = await database.Pessoas.findOrCreate(
+        {
+          where: { cpf : cpf}, 
+          defaults: {...novaPessoa}
+        },
+      );
+
+      criado?  res.status(201).json(novaPessoaCriada) :   res.status(409).json({mensagem: 'Cpf já cadastrado'});
+
     }catch(erro){
       return res.status(500).json(erro.message);
     }
