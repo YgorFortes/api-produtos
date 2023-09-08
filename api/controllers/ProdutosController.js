@@ -41,12 +41,28 @@ class ProdutosController{
   }
 
   static async criarProduto(req, res){
-    const {fornecedores, ...infoNovoProduto} = req.body;
+    const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
 
     try {
-      const novoProduto = await database.Produtos.create(infoNovoProduto);
-      novoProduto.setFornecedores(fornecedores);
-      return res.status(200).json(novoProduto);
+      const [novoProduto, criado] = await database.Produtos.findOrCreate(
+        {
+          where: 
+          {
+            nome : nome,
+            modelo: modelo,
+            marca: marca
+          }, 
+          defaults: {...infoNovoProduto}
+        },
+      );
+
+      if(criado){
+        await novoProduto.setFornecedores(fornecedores);
+        return res.status(200).json(novoProduto);
+      }else{
+        return res.status(409).json({mensagem: 'Produto já cadastrado'});
+      }
+      
     } catch (erro) {
       return res.status(500).json(erro.message)
     }
