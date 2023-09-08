@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const database = require('../models/index.js');
 
 class PessoaController {
@@ -28,6 +29,20 @@ class PessoaController {
     }
   }
 
+  static async listarPessoaPorFiltro(req, res){
+    const {nome,cpf} = req.query;
+    const where = {};
+    nome  ? where.nome = nome: null
+    cpf  ? where.cpf = cpf: null
+    
+    try{
+      const resultadoFiltro = await database.Pessoas.findAll({where})
+      return res.status(200).json(resultadoFiltro);
+    }catch(erro){
+      return res.status(500).json(erro.message);
+    }
+  }
+
   static async listarPessoaPorId (req, res){
     const {id} = req.params;
     try{
@@ -46,7 +61,6 @@ class PessoaController {
 
   static async criarPessoa (req, res) {
     const {cpf, ...novaPessoa} = req.body;
-    console.log(novaPessoa)
     try{
       const [novaPessoaCriada, criado] = await database.Pessoas.findOrCreate(
         {
