@@ -19,10 +19,41 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Fornecedores.init({
-    nome: DataTypes.STRING,
-    endereco: DataTypes.STRING,
-    telefone: DataTypes.STRING,
-    cnpj: DataTypes.STRING,
+    nome: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Não é permitido campo nome vazio'
+        }
+      }
+    },
+    endereco: {
+      type: DataTypes.STRING,
+      notEmpty: {
+        args: true,
+        msg: 'Não é permitido campo endereço vazio'
+      }
+    },
+    telefone: {
+      type: DataTypes.STRING,
+      validate: {
+        is: {
+          args: 
+          ["^\\(?([1-9]{2})\\)?([ .-]?)([9]{1})([ .-]?)(\\d{4})([ .-]?)(\\d{4})$|^([ .-]?)([9]{1})([ .-]?)(\\d{4})([ .-]?)(\\d{4})$"],
+          msg: 'Digite um número de telefone/celular válido'
+        }
+      }
+    },
+    cnpj: {
+      type:DataTypes.STRING,
+      validate: {
+        is: {
+          args: ["^\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}\\-\\d{2}$"],
+          msg: 'Digite um cnpj no formato válido'
+        }
+      }
+    },
     
   }, {
     sequelize,

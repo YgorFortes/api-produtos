@@ -19,9 +19,37 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Vendas.init({
-    data_pagamento: DataTypes.DATE,
-    data_entrega: DataTypes.DATEONLY,
-    data_venda: DataTypes.DATE
+    data_pagamento: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: {
+          args: true,
+          msg: 'Formato inválido de data'
+        }
+      }
+    },
+    data_entrega: {
+      type: DataTypes.DATEONLY,
+      validate: {
+        isDate: {
+          args: true,
+          msg: 'Formato inválido de data'
+        },
+        isAfter:{
+          args: "2023-09-07",
+          msg: 'Formato inválido de data. Data precisar ser depois de hoje'
+        }
+      }
+    },
+    data_venda:{
+      type: DataTypes.DATE,
+      validate: {
+        isDate: {
+          args: true,
+          msg: 'Formato inválido de data'
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid: true,

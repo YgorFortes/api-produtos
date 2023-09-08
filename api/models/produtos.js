@@ -24,8 +24,24 @@ module.exports = (sequelize, DataTypes) => {
   }
   
   Produtos.init({
-    nome: DataTypes.STRING,
-    valor: DataTypes.FLOAT,
+    nome: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Não é permitido campo nome vazio'
+        }
+      }
+    },
+    valor: {
+      type: DataTypes.FLOAT,
+      validate: {
+        isNumeric: {
+          args: true,
+          msg: 'Válido somente números',
+        }
+      }
+    },
     modelo: DataTypes.STRING,
     marca: DataTypes.STRING
   }, {

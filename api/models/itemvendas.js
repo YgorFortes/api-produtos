@@ -20,8 +20,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ItemVendas.init({
-    quantidade: DataTypes.INTEGER,
-    valor: DataTypes.FLOAT
+    quantidade: {
+      type: DataTypes.INTEGER,
+      validate:{
+        isInt: {
+          args: true,
+          msg: 'O campo deve ser um número inteiro'
+        }
+      }
+    },
+    valor: {
+      type: DataTypes.FLOAT,
+      validate: {
+        isNumeric: {
+          args:true,
+          msg: 'Campo valor é válido somente números'
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid:true,

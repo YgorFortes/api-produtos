@@ -1,0 +1,9 @@
+Cadastrar no produto, somente senão tiver o modelo cadastrado. Possivelmente colocar tudo em minusculo quando o back vim.
+
+Só cadastrar pessoa, se o cpf ainda não foi cadastrado.
+
+Só cadastrar fornecedor, se o cnpj não foi ainda cadastrado
+
+
+Procurar como fazer sistema de venda no sequelize
+

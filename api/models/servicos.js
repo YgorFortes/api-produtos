@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, NOW
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Servicos extends Model {
@@ -15,10 +15,31 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  const data = new Date();
   Servicos.init({
     tipo: DataTypes.STRING,
-    data_entrega: DataTypes.DATEONLY,
-    preco: DataTypes.FLOAT
+    data_entrega: {
+      type: DataTypes.DATEONLY,
+      validate: {
+        isDate: {
+          args: true,
+          msg: 'Formato inválido de data'
+        },
+        isAfter:{
+          args: "2023-09-07",
+          msg: 'Formato inválido de data. Data precisar ser depois de hoje'
+        }
+      }
+    },
+    preco: {
+      type: DataTypes.FLOAT,
+      validate:{
+        isNumeric: {
+          args: true,
+          msg: 'Coloque um numero válido'
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid:true,
