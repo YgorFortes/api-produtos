@@ -4,6 +4,7 @@ const FornecedorController = require('../controllers/FornecedoresController');
 const router = Router();
 
 router
+.get('/fornecedores/filtro',FornecedorController.listarFornecedorPorFiltro)
 .get('/fornecedores', FornecedorController.listarFornecedores)
 .get('/fornecedores/:id',FornecedorController.listarFonecedorPorId)
 .post('/fornecedores/',FornecedorController.criarFornecedor)

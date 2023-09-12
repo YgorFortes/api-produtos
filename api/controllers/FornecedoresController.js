@@ -37,13 +37,25 @@ class FornecedorController{
     }
   }
 
-  static async criarFornecedor(req, res){
-    const {cnpj,produtos, ...informacaoNovoFornecedor} = req.body;
+  static async listarFornecedorPorFiltro(req, res){
+    const where = filtro(req.query);
+    console.log(where)
+    try {
+      const resultadoFiltro = await database.Fornecedores.findAll({where});
+      return res.status(200).json(resultadoFiltro)
+    } catch (erro) {
+      return res.status(500).json(erro.mensage)
+    }
+  }
 
+  static async criarFornecedor(req, res){
+    const {cnpj,telefone,produtos, ...informacaoNovoFornecedor} = req.body;
+    const cnpjFormatado = formatarCnpj(cnpj);
+    const telefoneFormatado = formataTelefone (telefone);
     try {
       const [novoFornecedor, criado] = await database.Fornecedores.findOrCreate(
         {
-          where: { cnpj : cnpj}, 
+          where: { cnpj : cnpjFormatado, telefone: telefoneFormatado}, 
           defaults: {...informacaoNovoFornecedor}
         }
       );
@@ -87,7 +99,6 @@ class FornecedorController{
     }
   }
 
-  
   static async deletarFornecedor(req, res){
     const {id} = req.params;
     try {
@@ -108,7 +119,8 @@ class FornecedorController{
       await database.Fornecedores.restore(
         {
           where:{ id: Number(id)}
-        })
+        }
+      )
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -116,6 +128,29 @@ class FornecedorController{
 
   }
 
+}
+
+function formatarCnpj(cnpj){
+  const cnpjSemCaracter = cnpj.replace(/\D/g, '');
+  const cnpjFormatado = cnpjSemCaracter.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
+  return cnpjFormatado
+}
+
+function formataTelefone (telefone){
+  const telefoneSemCaracter = telefone.replace(/\D/g, '');
+  const telefoneFormatado = telefoneSemCaracter.replace(/^(\d{2})(\d{5}|\d{4})(\d{4})$/, "($1) $2-$3");
+  return telefoneFormatado;
+}
+
+function filtro(parametros){
+  const {nome, endereco, telefone, cnpj} = parametros;
+  const where = {};
+  if(nome) where.nome = nome;
+  if(endereco) where.endereco = endereco;
+  if(telefone) where.telefone = formataTelefone(telefone)
+  if(cnpj) where.cnpj = formatarCnpj(cnpj);
+
+  return where;
 }
 
 

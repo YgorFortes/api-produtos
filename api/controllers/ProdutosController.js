@@ -40,6 +40,18 @@ class ProdutosController{
     }
   }
 
+  static async listarProdutoPorFiltro(req, res){
+    const where =   filtro(req.query);
+    try {
+      const resultadoFiltro = await database.Produtos.findAll(where);
+      res.status(200).json(resultadoFiltro);
+    } catch (erro) {
+      return res.status(500).json(erro.message);
+    }
+  }
+
+
+
   static async criarProduto(req, res){
     const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
 
@@ -123,6 +135,27 @@ class ProdutosController{
     }
 
   }
+}
+
+function filtro(parametros){
+  const {nome, modelo, marca, fornecedorId} = parametros;
+  let where = {};
+
+  if(nome) where.nome = nome;
+  if(modelo) where.modelo = modelo;
+  if(marca) where.marca = marca;
+
+  if(fornecedorId) {
+  const include =  {  
+    model: database.Fornecedores,
+    through: "FornecedorProduto",
+    as :'fornecedores',
+    where: {id: fornecedorId}
+   
+  }
+   return where = {where, include}
+ }
+  return where;
 }
 
 module.exports = ProdutosController;

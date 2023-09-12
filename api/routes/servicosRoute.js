@@ -5,6 +5,7 @@ const ServicosController = require("../controllers/ServicosController");
 const router = Router();
 
 router
+.get('/servicos/filtro', ServicosController.listarServicosPorFiltro)
 .get('/servicos',ServicosController.listarServicos)
 .get('/servicos/:id',ServicosController.listaServicosPorId)
 .post('/servicos', ServicosController.criarServico)

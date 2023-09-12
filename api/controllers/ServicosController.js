@@ -34,6 +34,17 @@ class ServicosController {
     }
   }
 
+  static async listarServicosPorFiltro(req, res){
+    const where = filtros(req.query);
+    console.log(where)
+    try {
+      const resultadoPorFiltro = await database.Servicos.findAll(where );
+      res.status(200).json(resultadoPorFiltro)
+    } catch (erro) {
+      return res.status(500).json(erro.message);
+    }
+  }
+
   static async criarServico (req, res){
     const infoServico = req.body;
     try {
@@ -90,7 +101,26 @@ class ServicosController {
     }
 
   }
-  
+
 }
+
+function filtros(parametros){
+  const {tipo, dataEntrega, pessoaId, nomePessoa} = parametros;
+  let  where = {}
+  if(tipo) where.tipo = tipo ;
+  if(dataEntrega) where.data_entrega = dataEntrega ;
+  if(pessoaId)  where.pessoa_id = pessoaId ;
+
+  if(nomePessoa) {
+    const include = {
+      model: database.Pessoas,
+      where: {nome: nomePessoa}
+    }
+    return where = {where, include}
+  }
+  
+  return where
+}
+
 
 module.exports = ServicosController;

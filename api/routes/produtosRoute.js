@@ -4,6 +4,7 @@ const ProdutosController = require('../controllers/ProdutosController.js');
 const router = Router();
 
 router 
+.get('/produtos/filtro', ProdutosController.listarProdutoPorFiltro)
 .get('/produtos',ProdutosController.listarProdutos)
 .get('/produtos/:id', ProdutosController.listaProdutoPorId)
 .post('/produtos', ProdutosController.criarProduto)

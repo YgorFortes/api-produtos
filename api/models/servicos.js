@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Servicos.belongsTo(models.Pessoas, {
-        foreignKey: 'pessoa_id'
+        foreignKey: 'pessoa_id',
       })
     }
   }
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       validate:{
         isNumeric: {
           args: true,
-          msg: 'Coloque um numero válido'
+          msg: 'Válido somente números'
         }
       }
     }
