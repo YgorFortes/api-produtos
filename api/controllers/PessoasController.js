@@ -1,5 +1,6 @@
-const { where } = require('sequelize');
+const  Op  = require('sequelize');
 const database = require('../models/index.js');
+
 
 class PessoaController {
   static async listarTodasPessoas(__, res){
@@ -30,11 +31,8 @@ class PessoaController {
   }
 
   static async listarPessoaPorFiltro(req, res){
-    const {nome,cpf} = req.query;
-    const where = {};
-    nome  ? where.nome = nome: null
-    cpf  ? where.cpf = cpf: null
-    
+  
+    const where = filtro(req.query)
     try{
       const resultadoFiltro = await database.Pessoas.findAll({where})
       return res.status(200).json(resultadoFiltro);
@@ -61,14 +59,14 @@ class PessoaController {
 
   static async criarPessoa (req, res) {
     const {cpf, ...novaPessoa} = req.body;
+    const cpfFormatado = formataCpf(cpf);
     try{
       const [novaPessoaCriada, criado] = await database.Pessoas.findOrCreate(
         {
-          where: { cpf : cpf}, 
+          where: { cpf : cpfFormatado}, 
           defaults: {...novaPessoa}
         },
       );
-
       criado?  res.status(201).json(novaPessoaCriada) :   res.status(409).json({mensagem: 'Cpf já cadastrado'});
 
     }catch(erro){
@@ -134,6 +132,20 @@ class PessoaController {
     }
 
   }
+}
+
+function formataCpf(cpf){
+  const dado = cpf.replace(/\D/g, '');
+  const cpfFormatado = dado.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1-$2-$3-$4'); 
+  return cpfFormatado;
+}
+
+function filtro(parametros){
+  const {nome,cpf} = parametros;
+  const where = {};
+  if (nome)   where.nome  = nome;
+  if (cpf)  where.cpf  =  formataCpf(cpf);
+  return where ;
 }
 
 module.exports = PessoaController;
