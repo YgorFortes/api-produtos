@@ -1,5 +1,5 @@
 const database = require('../models/index.js');
-
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 class FornecedorController{
 
   static async listarFornecedores(__, res) {
@@ -38,10 +38,10 @@ class FornecedorController{
   }
 
   static async listarFornecedorPorFiltro(req, res){
-    const where = filtro(req.query);
+    const where = filtros(req.query);
     console.log(where)
     try {
-      const resultadoFiltro = await database.Fornecedores.findAll({where});
+      const resultadoFiltro = await database.Fornecedores.findAll({...where});
       return res.status(200).json(resultadoFiltro)
     } catch (erro) {
       return res.status(500).json(erro.mensage)
@@ -142,15 +142,37 @@ function formataTelefone (telefone){
   return telefoneFormatado;
 }
 
-function filtro(parametros){
-  const {nome, endereco, telefone, cnpj} = parametros;
-  const where = {};
+
+
+function filtros(parametros){
+  const {nome, endereco, telefone, cnpj, nomeProduto, marcaProduto,  modeloProduto} = parametros;
+  let where = {};
   if(nome) where.nome = nome;
   if(endereco) where.endereco = endereco;
   if(telefone) where.telefone = formataTelefone(telefone)
   if(cnpj) where.cnpj = formatarCnpj(cnpj);
 
-  return where;
+  if(nomeProduto) {
+    const include = associacaoInclude(database.Produtos, 'nome', nomeProduto, 'FornecedorProduto','produtos');
+
+    return {where, include}
+  }
+
+  if(marcaProduto){
+    const include = associacaoInclude(database.Produtos, 'marca', marcaProduto, 'FornecedorProduto','produtos');
+
+    return {where, include}
+  }
+
+  if(modeloProduto) {
+    const include = associacaoInclude(database.Produtos, 
+    'FornecedorProduto','produtos', 'modelo', modeloProduto);
+
+    return {where, include}
+  }
+  
+
+  return {where};
 }
 
 

@@ -1,4 +1,5 @@
 const database = require("../models/index.js");
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
 class ServicosController {
 
@@ -38,7 +39,7 @@ class ServicosController {
     const where = filtros(req.query);
     console.log(where)
     try {
-      const resultadoPorFiltro = await database.Servicos.findAll(where );
+      const resultadoPorFiltro = await database.Servicos.findAll({...where});
       res.status(200).json(resultadoPorFiltro)
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -106,21 +107,21 @@ class ServicosController {
 
 function filtros(parametros){
   const {tipo, dataEntrega, pessoaId, nomePessoa} = parametros;
-  let  where = {}
+  let  where = {};
   if(tipo) where.tipo = tipo ;
   if(dataEntrega) where.data_entrega = dataEntrega ;
   if(pessoaId)  where.pessoa_id = pessoaId ;
 
   if(nomePessoa) {
-    const include = {
-      model: database.Pessoas,
-      where: {nome: nomePessoa}
-    }
-    return where = {where, include}
+    const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
+    console.log(include)
+   
+    return {where, include}
   }
   
-  return where
+  return {where}
 }
+
 
 
 module.exports = ServicosController;
