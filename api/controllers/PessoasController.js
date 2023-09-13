@@ -32,9 +32,9 @@ class PessoaController {
 
   static async listarPessoaPorFiltro(req, res){
   
-    const where = filtro(req.query)
+    const where = filtros(req.query)
     try{
-      const resultadoFiltro = await database.Pessoas.findAll({where})
+      const resultadoFiltro = await database.Pessoas.findAll({...where})
       return res.status(200).json(resultadoFiltro);
     }catch(erro){
       return res.status(500).json(erro.message);
@@ -140,12 +140,13 @@ function formataCpf(cpf){
   return cpfFormatado;
 }
 
-function filtro(parametros){
+function filtros(parametros){
   const {nome,cpf} = parametros;
   const where = {};
   if (nome)   where.nome  = nome;
   if (cpf)  where.cpf  =  formataCpf(cpf);
-  return where ;
+
+  return {where} ;
 }
 
 module.exports = PessoaController;

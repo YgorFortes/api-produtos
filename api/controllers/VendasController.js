@@ -1,5 +1,5 @@
-const { where } = require('sequelize');
 const database = require ('../models/index.js');
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
 class VendasController{
 
@@ -34,6 +34,18 @@ class VendasController{
       return res.status(200).json(listarVendaPorId)
     } catch (erro) {
       return res.status(500).json(erro.mensage)
+    }
+  }
+
+  static async listarVendaPorFiltro(req, res){
+    const where = filtro(req.query);
+
+    console.log(where)
+    try{
+      const resultadoFiltro = await database.Vendas.findAll({...where})
+      return res.status(200).json(resultadoFiltro);
+    }catch(erro){
+      return res.status(500).json(erro.message);
     }
   }
 
@@ -96,4 +108,21 @@ class VendasController{
   }
 }
 
+function filtro(parametros){
+  const {dataPagamento, dataEntrega, dataVenda, nomePessoa} = parametros;
+  let where = {};
+
+  if(dataPagamento) where.data_pagamento = dataPagamento;
+  if(dataEntrega) where.data_entrega = dataEntrega;
+  if(dataVenda) where.data_venda = dataVenda;
+
+  if(nomePessoa) {
+    const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
+
+    return {where, include}
+  }
+
+  return {where}
+  
+}
 module.exports = VendasController;

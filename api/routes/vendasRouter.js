@@ -4,6 +4,7 @@ const VendasController = require("../controllers/VendasController");
 const router = Router();
 
 router
+.get('/vendas/filtro', VendasController.listarVendaPorFiltro)
 .get('/vendas', VendasController.listarVendas)
 .get('/vendas/:id', VendasController.listarVendaPorId)
 .post('/vendas', VendasController.criarVenda)

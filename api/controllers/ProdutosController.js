@@ -1,5 +1,5 @@
 const database = require('../models/index.js');
-
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
 class ProdutosController{
 
   static async listarProdutos(__, res){
@@ -41,9 +41,9 @@ class ProdutosController{
   }
 
   static async listarProdutoPorFiltro(req, res){
-    const where =   filtro(req.query);
+    const where = filtros(req.query);
     try {
-      const resultadoFiltro = await database.Produtos.findAll(where);
+      const resultadoFiltro = await database.Produtos.findAll({...where});
       res.status(200).json(resultadoFiltro);
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -137,8 +137,8 @@ class ProdutosController{
   }
 }
 
-function filtro(parametros){
-  const {nome, modelo, marca, fornecedorId} = parametros;
+function filtros(parametros){
+  const {nome, modelo, marca, fornecedorId, nomeFornecedor} = parametros;
   let where = {};
 
   if(nome) where.nome = nome;
@@ -146,16 +146,18 @@ function filtro(parametros){
   if(marca) where.marca = marca;
 
   if(fornecedorId) {
-  const include =  {  
-    model: database.Fornecedores,
-    through: "FornecedorProduto",
-    as :'fornecedores',
-    where: {id: fornecedorId}
-   
-  }
-   return where = {where, include}
+    const include = associacaoInclude(database.Fornecedores, "id", fornecedorId , 'FornecedorProduto',  'fornecedores');
+
+    return where = {where, include}
  }
-  return where;
+
+ if(nomeFornecedor) {
+    const include = associacaoInclude(database.Fornecedores, "nome", nomeFornecedor , 'FornecedorProduto',  'fornecedores');
+    
+    return where = {where, include}
+ }
+
+  return {where};
 }
 
 module.exports = ProdutosController;
