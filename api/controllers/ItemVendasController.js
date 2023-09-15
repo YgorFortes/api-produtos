@@ -41,11 +41,10 @@ class ItemVendasController{
   }
 
   static async criarItemVendas(req, res){
-    const {venda_id, produto_id, ...novoItemVenda} = req.body;
-    console.log(venda_id, novoItemVenda)
+    const novoItemVenda = req.body;
+
     try {
-      const novoItemVendaCriado = await database.ItemVendas.create({produto_id, venda_id, ...novoItemVenda});
-   
+      const novoItemVendaCriado = await database.ItemVendas.create(novoItemVenda);
       return res.status(201).json(novoItemVendaCriado)
     } catch (erro) {
       return res.status(500).json(erro.message);
