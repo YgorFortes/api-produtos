@@ -145,15 +145,12 @@ function filtros(parametros){
   if(modelo) where.modelo = modelo;
   if(marca) where.marca = marca;
 
-  if(fornecedorId) {
-    const include = associacaoInclude(database.Fornecedores, "id", fornecedorId , 'FornecedorProduto',  'fornecedores');
-
-    return where = {where, include}
- }
-
- if(nomeFornecedor) {
-    const include = associacaoInclude(database.Fornecedores, "nome", nomeFornecedor , 'FornecedorProduto',  'fornecedores');
-    
+  if(fornecedorId || nomeFornecedor  ) {
+    const include = associacaoInclude(
+      database.Fornecedores, "id" || "nome", 
+      fornecedorId  || nomeFornecedor, 
+      'FornecedorProduto',  
+      'fornecedores');
     return where = {where, include}
  }
 

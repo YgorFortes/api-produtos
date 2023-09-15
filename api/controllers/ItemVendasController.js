@@ -41,10 +41,11 @@ class ItemVendasController{
   }
 
   static async criarItemVendas(req, res){
-    const novoItemVenda = req.body;
-    console.log(novoItemVenda)
+    const {venda_id, produto_id, ...novoItemVenda} = req.body;
+    console.log(venda_id, novoItemVenda)
     try {
-      const novoItemVendaCriado = await database.ItemVendas.create(novoItemVenda);
+      const novoItemVendaCriado = await database.ItemVendas.create({produto_id, venda_id, ...novoItemVenda});
+   
       return res.status(201).json(novoItemVendaCriado)
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -107,5 +108,6 @@ class ItemVendasController{
   }
 
 }
+
 
 module.exports = ItemVendasController;

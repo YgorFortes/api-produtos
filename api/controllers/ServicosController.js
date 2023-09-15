@@ -108,14 +108,12 @@ class ServicosController {
 function filtros(parametros){
   const {tipo, dataEntrega, pessoaId, nomePessoa} = parametros;
   let  where = {};
-  if(tipo) where.tipo = tipo ;
+  if(tipo ) where.tipo = tipo ;
   if(dataEntrega) where.data_entrega = dataEntrega ;
   if(pessoaId)  where.pessoa_id = pessoaId ;
 
   if(nomePessoa) {
     const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
-    console.log(include)
-   
     return {where, include}
   }
   
