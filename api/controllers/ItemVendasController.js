@@ -42,7 +42,7 @@ class ItemVendasController{
 
   static async criarItemVendas(req, res){
     const novoItemVenda = req.body;
-    console.log(novoItemVenda)
+
     try {
       const novoItemVendaCriado = await database.ItemVendas.create(novoItemVenda);
       return res.status(201).json(novoItemVendaCriado)
@@ -107,5 +107,6 @@ class ItemVendasController{
   }
 
 }
+
 
 module.exports = ItemVendasController;
