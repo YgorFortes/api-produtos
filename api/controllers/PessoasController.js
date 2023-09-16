@@ -3,45 +3,45 @@ const database = require('../models/index.js');
 
 
 class PessoaController {
-  static async listarTodasPessoas(__, res){
+  static async listarTodasPessoas(__, res, next){
     try{
       const resultadoListaPessoas = await database.Pessoas.scope('todas').findAll();
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarPessoasAtivas(__, res){
+  static async listarPessoasAtivas(__, res, next){
     try{
       const resultadoListaPessoas = await database.Pessoas.findAll();
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarPessoasDesativadas(__, res){
+  static async listarPessoasDesativadas(__, res , next){
     try{
       const resultadoListaPessoas = await database.Pessoas.scope('desativadas').findAll();
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarPessoaPorFiltro(req, res){
+  static async listarPessoaPorFiltro(req, res, next){
   
     const where = filtros(req.query)
     try{
       const resultadoFiltro = await database.Pessoas.findAll({...where})
       return res.status(200).json(resultadoFiltro);
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarPessoaPorId (req, res){
+  static async listarPessoaPorId (req, res, next){
     const {id} = req.params;
     try{
       const resultadoPessoaId = await database.Pessoas.findOne(
@@ -53,11 +53,11 @@ class PessoaController {
         })
         return res.status(200).json(resultadoPessoaId);
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async criarPessoa (req, res) {
+  static async criarPessoa (req, res, next) {
     const {cpf, ...novaPessoa} = req.body;
     const cpfFormatado = formataCpf(cpf);
     try{
@@ -70,11 +70,11 @@ class PessoaController {
       criado?  res.status(201).json(novaPessoaCriada) :   res.status(409).json({mensagem: 'Cpf já cadastrado'});
 
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async atualizarPessoa(req, res) {
+  static async atualizarPessoa(req, res, next) {
     const {id} = req.params;
     const noasInfosPessoa = req.body;
 
@@ -97,11 +97,11 @@ class PessoaController {
       )
       return res.status(201).json(pessoaAtualizada);
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async deletarPessoa(req, res) {
+  static async deletarPessoa(req, res, next) {
     const {id} = req.params;
 
     try{
@@ -115,11 +115,11 @@ class PessoaController {
     )
     return res.status(200).json({mensagem: `Id: ${id} deletado`});
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async restaurarPessoa(req, res){
+  static async restaurarPessoa(req, res, next){
     const {id} = req.params;
     try {
       await database.Pessoas.restore(
@@ -128,7 +128,7 @@ class PessoaController {
         })
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
 
   }
