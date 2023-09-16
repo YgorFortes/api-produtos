@@ -58,8 +58,6 @@ class VendasController{
 
   static async listarVendaPorFiltro(req, res){
     const where = filtro(req.query);
-
-    console.log(where)
     try{
       const resultadoFiltro = await database.Vendas.findAll({...where})
       return res.status(200).json(resultadoFiltro);
@@ -132,7 +130,6 @@ function formatarData(data){
   const dataFormatoBrasil = new Date(data).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
   return dataFormatoBrasil
 
-  
 } 
 
 
@@ -148,6 +145,7 @@ function filtro(parametros){
   if(nomePessoa) {
     const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
     return {where, include}
+    
   }
 
 
