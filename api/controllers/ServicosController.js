@@ -3,7 +3,7 @@ const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
 class ServicosController {
 
-  static async listarServicos(__,res){
+  static async listarServicos(__,res, next){
     try {
       const resultadoListaServicos = await database.Servicos.findAll({
         include: {
@@ -11,13 +11,18 @@ class ServicosController {
           attributes: ['id','nome','cpf'],
         }
       });
+
+      if(resultadoListaServicos.length <1 ){
+        return res.status(500).json({mensagem: "Serviços não encontrado"});
+      }
+
       return res.status(200).json(resultadoListaServicos)
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listaServicosPorId(req,res){
+  static async listaServicosPorId(req,res, next){
     const {id} = req.params;
 
     try {
@@ -29,76 +34,104 @@ class ServicosController {
         }
       })
 
+      if(resultadoServicoPorId === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+
       return res.status(200).json(resultadoServicoPorId);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarServicosPorFiltro(req, res){
+  static async listarServicosPorFiltro(req, res, next){
     const where = filtros(req.query);
-    console.log(where)
+    
     try {
       const resultadoPorFiltro = await database.Servicos.findAll({...where});
+      console.log(resultadoPorFiltro)
+      if(resultadoPorFiltro.length <1 ){
+        return res.status(500).json({mensagem: "Resultado não encontrado"});
+      }
+
       res.status(200).json(resultadoPorFiltro)
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async criarServico (req, res){
+  static async criarServico (req, res, next){
     const infoServico = req.body;
     try {
       const novoServico = await database.Servicos.create(infoServico);
       return res.status(201).json(novoServico);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async atualizarServico(req, res){
+  static async atualizarServico(req, res, next){
     const {id} = req.params;
     const novaInforServico = req.body;
     try {
-      await database.Servicos.update(novaInforServico,
-        {
-          where: {id: Number(id)}
-        });
-
-      const novoServicoAtualizado = await database.Servicos.findOne(
-        {
-          where: {id: Number(id)}
-        });
-        return res.status(200).json(novoServicoAtualizado);
-    } catch (erro) {
-      return res.status(500).json(erro.message);
-    }
-  }
-
-  static async deletarServico(req, res){
-    const {id} = req.params;
-    try {
-      await database.Servicos.destroy(
+      const novaInfo = await database.Servicos.update(novaInforServico,
         {
           where: {id: Number(id)}
         }
       );
-      return res.status(200).json({mensagem: `Id: ${id} Deletado com sucesso`});
+      
+      const novoServicoAtualizado = await database.Servicos.findOne(
+        {
+          where: {id: Number(id)}
+        }
+      );
+
+      if(novoServicoAtualizado === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+    
+      return res.status(200).json(novoServicoAtualizado);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);;
     }
   }
 
-  static async restaurarServico(req, res){
+  static async deletarServico(req, res, next){
     const {id} = req.params;
     try {
-      await database.Servicos.restore(
+      const servicoDeletado = await database.Servicos.destroy(
+        {
+          where: {id: Number(id)}
+        }
+      );
+      
+      if(servicoDeletado === null){
+        return res.status(500).json({mensagem: "Id não deletado"});
+      }
+    
+
+      return res.status(200).json({mensagem: `Id: ${id} Deletado com sucesso`});
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async restaurarServico(req, res, next){
+    const {id} = req.params;
+    try {
+      const servicoRestaurado = await database.Servicos.restore(
         {
           where:{ id: Number(id)}
-        })
+        }
+      )
+
+      if(servicoRestaurado === null){
+        return res.status(500).json({mensagem: "Id não restaurado"});
+      }
+    
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
 
   }

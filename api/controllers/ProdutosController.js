@@ -2,7 +2,7 @@ const database = require('../models/index.js');
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
 class ProdutosController{
 
-  static async listarProdutos(__, res){
+  static async listarProdutos(__, res, next){
 
     try {
       const resultadoListaProdutos = await database.Produtos.findAll(
@@ -14,13 +14,18 @@ class ProdutosController{
           }
         }
       );
+
+      if(resultadoListaProdutos.length < 1){
+        return res.status(500).json({mensagem: "Produtos não encontrado"});
+      }
+
       return res.status(200).json(resultadoListaProdutos);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listaProdutoPorId(req, res){
+  static async listaProdutoPorId(req, res, next){
     const {id} = req.params;
 
     try {
@@ -34,25 +39,34 @@ class ProdutosController{
           }
         }
       );
+
+      if(resultadoProdutoId === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+
       return res.status(200).json(resultadoProdutoId)
     } catch (erro) {
-      return res.status(500).json(erro.message)
+      next(erro);
     }
   }
 
-  static async listarProdutoPorFiltro(req, res){
+  static async listarProdutoPorFiltro(req, res, next){
     const where = filtros(req.query);
     try {
       const resultadoFiltro = await database.Produtos.findAll({...where});
+      
+      if(resultadoFiltro.length < 1){
+        return res.status(500).json({mensagem: "Resultado não encontrado"});
+      }
       res.status(200).json(resultadoFiltro);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
 
 
-  static async criarProduto(req, res){
+  static async criarProduto(req, res, next){
     const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
 
     try {
@@ -76,11 +90,11 @@ class ProdutosController{
       }
       
     } catch (erro) {
-      return res.status(500).json(erro.message)
+      next(erro);
     }
   }
 
-  static async atualizarProduto(req, res){
+  static async atualizarProduto(req, res, next){
     const {fornecedores, infoProduto} = req.body;
     const {id} = req.params;
     try {
@@ -100,6 +114,11 @@ class ProdutosController{
           }
         }
       )
+
+      if(produtoAtualizado === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+
       produtoAtualizado.setFornecedores(fornecedores);
       return res.status(200).json(produtoAtualizado)
     } catch (erro) {
@@ -107,31 +126,41 @@ class ProdutosController{
     }
   }
 
-  static async deletarProduto(req, res){
+  static async deletarProduto(req, res, next){
     const {id} = req.params;
     try {
-      await database.Produtos.destroy(
+      const produtoDeletado = await database.Produtos.destroy(
         {
           where: {id: Number(id)}
         }
       );
 
+      if(!produtoDeletado){
+        return res.status(500).json({mensagem: "Id não deletado"});
+      }
+
       return res.status(201).json({mensagem: `Id: ${id} deletado`});
     } catch (erro) {
-      return res.status(500).json(erro.message)
+      next(erro);
     }
   }
 
-  static async restaurarProduto(req, res){
+  static async restaurarProduto(req, res, next){
     const {id} = req.params;
     try {
-      await database.Produtos.restore(
+      const produtoRestaurado = await database.Produtos.restore(
         {
           where:{ id: Number(id)}
-        })
+        }
+      )
+      
+      if(!produtoRestaurado){
+        return res.status(500).json({mensagem: "Id não restaurado"});
+      }
+
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
 
   }

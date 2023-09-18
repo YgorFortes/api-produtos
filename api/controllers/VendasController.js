@@ -6,7 +6,7 @@ const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
 
 class VendasController{
 
-  static async listarVendas(__, res){
+  static async listarVendas(__, res, next){
     try {
       const listarResultadoVendas = await database.Vendas.findAll(
         {
@@ -16,13 +16,18 @@ class VendasController{
           }
         }
       );
+
+      if(listarResultadoVendas.length <1){
+        return res.status(500).json({mensagem: "Vendas não encontrado"});
+      }
+
       return res.status(200).json(listarResultadoVendas);
     } catch (erro) {
-      return res.status(500).json(erro.mensage)
+      next(erro);
     }
   }
 
-  static async listarVendaPorId(req, res) {
+  static async listarVendaPorId(req, res, next) {
     const {id} = req.params;
     try {
       const listarVendaPorId = await database.Vendas.findOne(
@@ -34,35 +39,28 @@ class VendasController{
           }
         }
       );
+
+      if(listarVendaPorId === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+    
       return res.status(200).json(listarVendaPorId)
     } catch (erro) {
-      return res.status(500).json(erro.mensage)
+      next(erro);
     }
-  }
-  static async listarPorData(req, res){
-    const {dataInicial, dataFinal}= req.query
-    const where ={};
- 
-    dataInicial ||dataFinal ? where.data_pagamento = {}  :  null;
-    dataInicial ? where.data_pagamento[Op.gte] =  dataInicial: null;
-    dataFinal ? where.data_pagamento[Op.lte] =  dataFinal : null;
-    console.log(req)
-    try {
-      const resultadoBusca = await database.Vendas.findAll({where})
-      res.status(200).json(resultadoBusca);
-    } catch (erro) {
-      return res.status(500).json(erro.message);
-    }
-  
   }
 
-  static async listarVendaPorFiltro(req, res){
+  static async listarVendaPorFiltro(req, res, next){
     const where = filtro(req.query);
     try{
       const resultadoFiltro = await database.Vendas.findAll({...where})
+
+      if(resultadoFiltro.length <1){
+        return res.status(500).json({mensagem: "Resultado não encontrado"});
+      }
       return res.status(200).json(resultadoFiltro);
     }catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
@@ -72,11 +70,11 @@ class VendasController{
       const novaVendaCriada = await database.Vendas.create(novaVenda);
       return res.status(201).json(novaVendaCriada);
     } catch (erro) {
-      return res.status(500).json(erro.mensage)
+      next(erro);
     }
   }
 
-  static async atualizarVenda(req, res ){
+  static async atualizarVenda(req, res, next ){
     const {id} = req.params;
     const novaInfoVenda = req.body;
     try {
@@ -90,45 +88,63 @@ class VendasController{
           where: {id: Number(id)}
         }
       );
+
+      if(novaVendaAtualizada === null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
+      }
+
       return res.status(200).json(novaVendaAtualizada)
     } catch (erro) {
-      return res.status(500).json(erro.mensage)
+      next(erro);
     }
   }
 
-  static async deletarVenda(req, res ){
+  static async deletarVenda(req, res, next ){
     const {id} = req.params;
 
     try {
-      await database.Vendas.destroy(
+      const vendaDeletada= await database.Vendas.destroy(
         {
           where: {id: Number(id)}
         }
       );
+
+      if(!vendaDeletada){
+        return res.status(500).json({mensagem: "Id não deletado"});
+      }
       return res.status(200).json({mensage: `Id: ${id} deletado`}) 
     } catch (erro) {
-      return res.status(500).json(erro.mensage)
+      next(erro);
     }
   }
 
-  static async restaurarVenda(req, res){
+  static async restaurarVenda(req, res, next){
     const {id} = req.params;
     try {
-      await database.Vendas.restore(
+     const vendaRestaurada = await database.Vendas.restore(
         {
           where:{ id: Number(id)}
-        })
+        }
+      )
+
+      if(!vendaRestaurada){
+        return res.status(500).json({mensagem: "Id não deletado"});
+      }
+
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
 }
 
 function formatarData(data){
-  const dataFormatoBrasil = new Date(data).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-  return dataFormatoBrasil
+  if(data){
+    const dataFormatoBrasil = new Date(data).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+    return dataFormatoBrasil
+  }
+  return data = ""
 
 } 
 
