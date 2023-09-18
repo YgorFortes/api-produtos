@@ -2,7 +2,7 @@ const database = require('../models/index.js');
 
 class ItemVendasController{
 
-  static async listarItemVendas(__, res){
+  static async listarItemVendas(__, res, next){
     try {
       const resultadolistarItemVendas = await database.ItemVendas.findAll(
         {
@@ -16,11 +16,11 @@ class ItemVendasController{
       );
       return res.status(200).json(resultadolistarItemVendas);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async listarItemVendasPorId(req, res){
+  static async listarItemVendasPorId(req, res, next){
     const {id} = req.params;
 
     try {
@@ -36,18 +36,18 @@ class ItemVendasController{
       )
       return res.status(200).json(resultadoListaItemVendasPorId);
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
-  static async criarItemVendas(req, res){
+  static async criarItemVendas(req, res, next){
     const novoItemVenda = req.body;
 
     try {
       const novoItemVendaCriado = await database.ItemVendas.create(novoItemVenda);
       return res.status(201).json(novoItemVendaCriado)
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
@@ -73,7 +73,7 @@ class ItemVendasController{
       );
       return res.status(200).json(ItemVendaAtualizado)
     } catch(erro){
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
@@ -88,7 +88,7 @@ class ItemVendasController{
       )
       return res.status(200).json({mensagem: `Id: ${id} Deletado com sucesso`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
   }
 
@@ -101,7 +101,7 @@ class ItemVendasController{
         })
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
-      return res.status(500).json(erro.message);
+      next(erro);
     }
 
   }
