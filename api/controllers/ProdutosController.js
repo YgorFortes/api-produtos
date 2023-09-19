@@ -1,5 +1,7 @@
 const database = require('../models/index.js');
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;;
 class ProdutosController{
 
   static async listarProdutos(__, res, next){
@@ -68,7 +70,7 @@ class ProdutosController{
 
   static async criarProduto(req, res, next){
     const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
-
+    console.log({...infoNovoProduto})
     try {
       const [novoProduto, criado] = await database.Produtos.findOrCreate(
         {
@@ -88,15 +90,16 @@ class ProdutosController{
       }else{
         return res.status(409).json({mensagem: 'Produto já cadastrado'});
       }
-      
+
     } catch (erro) {
       next(erro);
     }
   }
 
   static async atualizarProduto(req, res, next){
-    const {fornecedores, infoProduto} = req.body;
+    const {fornecedores, ...infoProduto} = req.body;
     const {id} = req.params;
+    
     try {
       await database.Produtos.update(infoProduto, 
         {
@@ -162,7 +165,18 @@ class ProdutosController{
     } catch (erro) {
       next(erro);
     }
+  }
 
+  static async desativarProdutoPorQuantidade(req, res, next){
+    const {id} = req.params;
+    try {
+      const desativarProdutoPorQuantidade = await database.Produtos.destroy({
+        where: {id: Number(id), quantidade: {[Op.lte]: 0 }}
+      });
+      res.status(200).json(desativarProdutoPorQuantidade)
+    } catch (erro) {
+      next(erro);
+    }
   }
 }
 

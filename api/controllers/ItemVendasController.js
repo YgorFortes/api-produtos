@@ -11,7 +11,7 @@ class ItemVendasController{
             {model: database.Produtos, attributes: ['nome', 'valor']},
             {model: database.Vendas, attributes: ['data_pagamento', 'data_entrega', 'data_venda']}
           ]
-            
+    
         }
       );
       return res.status(200).json(resultadolistarItemVendas);
@@ -51,7 +51,7 @@ class ItemVendasController{
     }
   }
 
-  static async atualizarItemVenda(req, res){
+  static async atualizarItemVenda(req, res, next){
     const {id} = req.params;
     const novaInfoItemVenda = req.body;
     try{
@@ -77,7 +77,7 @@ class ItemVendasController{
     }
   }
 
-  static async deletarItemVenda(req, res){
+  static async deletarItemVenda(req, res , next){
     const {id} = req.params;
     
     try {
@@ -92,7 +92,7 @@ class ItemVendasController{
     }
   }
 
-  static async restaurarItemVendas(req, res){
+  static async restaurarItemVendas(req, res , next){
     const {id} = req.params;
     try {
       await database.ItemVendas.restore(

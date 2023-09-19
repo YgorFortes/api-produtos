@@ -88,7 +88,7 @@ class FornecedorController{
 
   static async atualizarFornecedor (req, res, next){
     const {id} = req.params;
-    const {produtos, infoFornecedor} = req.body;
+    const {produtos, ...infoFornecedor} = req.body;
 
     try {
        await database.Fornecedores.update(infoFornecedor,
