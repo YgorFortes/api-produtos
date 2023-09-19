@@ -1,6 +1,8 @@
-const database = require ('../models/index.js');
+const {VendasServices} = require('../services/index.js');
+const database = require('../models')
 const Sequelize = require ('sequelize');
 const Op = Sequelize.Op;
+const vendasServices = new VendasServices;
 
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
 
@@ -8,14 +10,7 @@ class VendasController{
 
   static async listarVendas(__, res, next){
     try {
-      const listarResultadoVendas = await database.Vendas.findAll(
-        {
-          include: {
-            model: database.Pessoas,
-            attributes: ['nome','cpf'],
-          }
-        }
-      );
+      const listarResultadoVendas = await vendasServices.listarTodosOsRegistros();
 
       if(listarResultadoVendas.length <1){
         return res.status(500).json({mensagem: "Vendas não encontrado"});
@@ -30,15 +25,7 @@ class VendasController{
   static async listarVendaPorId(req, res, next) {
     const {id} = req.params;
     try {
-      const listarVendaPorId = await database.Vendas.findOne(
-        {
-          where: {id : Number(id)},
-          include: {
-            model: database.Pessoas,
-            attributes: ['nome','cpf'],
-          }
-        }
-      );
+      const listarVendaPorId = await vendasServices.listarRegistroPorId(id)
 
       if(listarVendaPorId === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
@@ -53,7 +40,7 @@ class VendasController{
   static async listarVendaPorFiltro(req, res, next){
     const where = filtro(req.query);
     try{
-      const resultadoFiltro = await database.Vendas.findAll({...where})
+      const resultadoFiltro = await vendasServices.listarRegistroPorFiltro(where)
 
       if(resultadoFiltro.length <1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -96,7 +83,6 @@ class VendasController{
 
         const novoItemVendaCriado = await database.ItemVendas.create(conteudo, {transaction: transacao});
 
-
         database.Produtos.update({quantidade: Number(quantidadeAtual)}, { where: {id : Number(produtoId)}}, {transaction: transacao});
 
         return res.status(200).json(novoItemVendaCriado);
@@ -109,18 +95,11 @@ class VendasController{
   static async atualizarVenda(req, res, next ){
     const {id} = req.params;
     const novaInfoVenda = req.body;
-    try {
-      await database.Vendas.update(novaInfoVenda,
-        {
-          where: {id: Number(id)}
-        }
-      );
-      const novaVendaAtualizada = await database.Vendas.findOne(
-        {
-          where: {id: Number(id)}
-        }
-      );
 
+    try {
+      await vendasServices.atualizarRegistro(id, novaInfoVenda);
+
+      const novaVendaAtualizada = await vendasServices.listarRegistroPorId(id);
       if(novaVendaAtualizada === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
       }
@@ -133,18 +112,13 @@ class VendasController{
 
   static async deletarVenda(req, res, next ){
     const {id} = req.params;
-
     try {
-      const vendaDeletada= await database.Vendas.destroy(
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const vendaDeletada= await vendasServices.deletarRegistro(id);
 
       if(!vendaDeletada){
         return res.status(500).json({mensagem: "Id não deletado"});
       }
-      return res.status(200).json({mensage: `Id: ${id} deletado`}) 
+      return res.status(200).json({mensage: `Id: ${id} deletado`}) ;
     } catch (erro) {
       next(erro);
     }
@@ -153,22 +127,17 @@ class VendasController{
   static async restaurarVenda(req, res, next){
     const {id} = req.params;
     try {
-     const vendaRestaurada = await database.Vendas.restore(
-        {
-          where:{ id: Number(id)}
-        }
-      )
-
+      const vendaRestaurada = await vendasServices.restaurarRegistro(id);
       if(!vendaRestaurada){
-        return res.status(500).json({mensagem: "Id não deletado"});
+        return res.status(500).json({mensagem: "Id não restaurado"});
       }
-
+    
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
       next(erro);
     }
-  }
 
+  }
 }
 
 function formatarData(data){

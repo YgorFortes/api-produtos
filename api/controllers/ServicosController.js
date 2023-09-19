@@ -1,16 +1,11 @@
-const database = require("../models/index.js");
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
+const {ServicosServices} =  require("../services/index.js");
+const servicosServices = new ServicosServices;
 
 class ServicosController {
-
   static async listarServicos(__,res, next){
     try {
-      const resultadoListaServicos = await database.Servicos.findAll({
-        include: {
-          model: database.Pessoas,
-          attributes: ['id','nome','cpf'],
-        }
-      });
+      const resultadoListaServicos = await servicosServices.listarTodosOsRegistros();
 
       if(resultadoListaServicos.length <1 ){
         return res.status(500).json({mensagem: "Serviços não encontrado"});
@@ -26,13 +21,7 @@ class ServicosController {
     const {id} = req.params;
 
     try {
-      const resultadoServicoPorId = await database.Servicos.findOne({
-        where: {id: Number(id)},
-        include: {
-          model: database.Pessoas,
-          attributes: ['id','nome','cpf'],
-        }
-      })
+      const resultadoServicoPorId = await servicosServices.listarRegistroPorId(id);
 
       if(resultadoServicoPorId === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
@@ -48,8 +37,7 @@ class ServicosController {
     const where = filtros(req.query);
     
     try {
-      const resultadoPorFiltro = await database.Servicos.findAll({...where});
-      console.log(resultadoPorFiltro)
+      const resultadoPorFiltro = await servicosServices.listarRegistroPorFiltro(where);
       if(resultadoPorFiltro.length <1 ){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
       }
@@ -63,7 +51,7 @@ class ServicosController {
   static async criarServico (req, res, next){
     const infoServico = req.body;
     try {
-      const novoServico = await database.Servicos.create(infoServico);
+      const novoServico = await servicosServices.criarRegistro(infoServico);
       return res.status(201).json(novoServico);
     } catch (erro) {
       next(erro);
@@ -74,11 +62,7 @@ class ServicosController {
     const {id} = req.params;
     const novaInforServico = req.body;
     try {
-      const novaInfo = await database.Servicos.update(novaInforServico,
-        {
-          where: {id: Number(id)}
-        }
-      );
+      await servicosServices.atualizarRegistro(id, novaInforServico);
       
       const novoServicoAtualizado = await database.Servicos.findOne(
         {
@@ -99,13 +83,9 @@ class ServicosController {
   static async deletarServico(req, res, next){
     const {id} = req.params;
     try {
-      const servicoDeletado = await database.Servicos.destroy(
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const servicoDeletado = await servicosServices.deletarRegistro(id)
       
-      if(servicoDeletado === null){
+      if(!servicoDeletado ){
         return res.status(500).json({mensagem: "Id não deletado"});
       }
     
@@ -119,13 +99,9 @@ class ServicosController {
   static async restaurarServico(req, res, next){
     const {id} = req.params;
     try {
-      const servicoRestaurado = await database.Servicos.restore(
-        {
-          where:{ id: Number(id)}
-        }
-      )
+      const servicoRestaurado = await servicosServices.restaurarRegistro(id)
 
-      if(servicoRestaurado === null){
+      if(!servicoRestaurado ){
         return res.status(500).json({mensagem: "Id não restaurado"});
       }
     
