@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, Op
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Produtos extends Model {
@@ -50,12 +50,17 @@ module.exports = (sequelize, DataTypes) => {
         isInt: {
           args: true,
           msg: 'Válido somente números inteiros',
+        },
+        min: {
+          args: 1,
+          msg: "O produto precisa ter pelo menos 1 na quantidade cadastrado"
         }
       }
     }
   }, {
     sequelize,
     paranoid:true,
+    scopes: {estoque: {where: {quantidade: {[Op.gte]: 1}}}},
     modelName: 'Produtos',
   });
   return Produtos;

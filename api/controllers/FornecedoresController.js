@@ -108,10 +108,11 @@ class FornecedorController{
         },
       );
 
-      if(fornecedorAtualizadoEncontrado.length < 1){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+      if(produtos){
+        fornecedorAtualizadoEncontrado.setProdutos(produtos);
+      }else {
+        fornecedorAtualizadoEncontrado.getProdutos(produtos);
       }
-      await fornecedorAtualizadoEncontrado.setProdutos(produtos);
       res.status(200).json(fornecedorAtualizadoEncontrado);
     } catch (erro) {
       next(erro);

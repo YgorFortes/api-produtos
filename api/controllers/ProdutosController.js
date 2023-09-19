@@ -7,6 +7,28 @@ class ProdutosController{
   static async listarProdutos(__, res, next){
 
     try {
+      const resultadoListaProdutos = await database.Produtos.scope('estoque').findAll(
+        {
+          include: {
+            model: database.Fornecedores,
+            as: "fornecedores",
+            attributes: ['nome','endereco','telefone','cnpj'],
+          }
+        }
+      );
+
+      if(resultadoListaProdutos.length < 1){
+        return res.status(500).json({mensagem: "Produtos não encontrado"});
+      }
+
+      return res.status(200).json(resultadoListaProdutos);
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async listarTodosProdutos(__, res, next){
+    try {
       const resultadoListaProdutos = await database.Produtos.findAll(
         {
           include: {
@@ -118,11 +140,13 @@ class ProdutosController{
         }
       )
 
-      if(produtoAtualizado === null){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+      if(fornecedores){
+        produtoAtualizado.setFornecedores(fornecedores);
+      }else {
+         produtoAtualizado.getFornecedores(fornecedores);
       }
 
-      produtoAtualizado.setFornecedores(fornecedores);
+      
       return res.status(200).json(produtoAtualizado)
     } catch (erro) {
       return res.status(500).json(erro.message)

@@ -6,6 +6,7 @@ const router = Router();
 router 
 .get('/produtos/filtro', ProdutosController.listarProdutoPorFiltro)
 .get('/produtos',ProdutosController.listarProdutos)
+.get('/produto/todos', ProdutosController.listarTodosProdutos)
 .get('/produtos/:id', ProdutosController.listaProdutoPorId)
 .post('/produtos', ProdutosController.criarProduto)
 .post('/produtos/:id/restaurar', ProdutosController.restaurarProduto)
