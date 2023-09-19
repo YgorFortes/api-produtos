@@ -1,23 +1,23 @@
-const  Op  = require('sequelize');
-const database = require('../models/index.js');
-
+const {PessoasServices} =  require("../services/index.js");
+const pessoasServices = new PessoasServices;
 
 class PessoaController {
   static async listarTodasPessoas(__, res, next){
     try{
-      const resultadoListaPessoas = await database.Pessoas.scope('todas').findAll();
+      const resultadoListaPessoas = await pessoasServices.listarTodos();
       if(resultadoListaPessoas.length < 1){
         return res.status(500).json({mensagem: "Pessoas não encontrado"});
       } 
-      return res.status(200).json(resultadoListaPessoas)
+      return res.status(200).json(resultadoListaPessoas);
+
     }catch(erro){
-      next(erro);
+      return res.status(200).json(resultadoListaPessoas)
     }
   }
 
   static async listarPessoasAtivas(__, res, next){
     try{
-      const resultadoListaPessoas = await database.Pessoas.findAll();
+      const resultadoListaPessoas = await pessoasServices.listarTodosOsRegistros();
       if(resultadoListaPessoas.length < 1){
         return res.status(500).json({mensagem: "Pessoas não encontrado"});
       } 
@@ -29,7 +29,8 @@ class PessoaController {
 
   static async listarPessoasDesativadas(__, res , next){
     try{
-      const resultadoListaPessoas = await database.Pessoas.scope('desativadas').findAll();
+      const resultadoListaPessoas = await pessoasServices.listarRegistroDesativados();
+      
       if(resultadoListaPessoas.length < 1){
         return res.status(500).json({mensagem: "Pessoas não encontrado"});
       } 
@@ -43,7 +44,7 @@ class PessoaController {
   
     const where = filtros(req.query)
     try{
-      const resultadoFiltro = await database.Pessoas.findAll({...where})
+      const resultadoFiltro = await  pessoasServices.listarRegistroPorFiltro(where);
       if(resultadoFiltro.length <1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
       }
@@ -56,12 +57,8 @@ class PessoaController {
   static async listarPessoaPorId (req, res, next){
     const {id} = req.params;
     try{
-      const resultadoPessoaId = await database.Pessoas.findOne(
-        {
-          where: {id: Number(id)}
-        }
-      )
-        
+      const resultadoPessoaId = await pessoasServices.listarRegistroPorId(id);
+      console.log(resultadoPessoaId)
       if(resultadoPessoaId === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
       }
@@ -75,12 +72,7 @@ class PessoaController {
     const {cpf, ...novaPessoa} = req.body;
     const cpfFormatado = formataCpf(cpf);
     try{
-      const [novaPessoaCriada, criado] = await database.Pessoas.findOrCreate(
-        {
-          where: { cpf : cpfFormatado}, 
-          defaults: {...novaPessoa}
-        },
-      );
+      const [novaPessoaCriada, criado] = await pessoasServices.criarRegistro("cpf", cpfFormatado, novaPessoa);
       criado?  res.status(201).json(novaPessoaCriada) :   res.status(409).json({mensagem: 'Cpf já cadastrado'});
 
     }catch(erro){
@@ -93,17 +85,10 @@ class PessoaController {
     const noasInfosPessoa = req.body;
 
     try{
-      await database.Pessoas.update(noasInfosPessoa, 
-        {
-          where: {id: Number(id)}
-        }
-      )
+      await pessoasServices.atualizarRegistro(id, noasInfosPessoa)
 
-      const pessoaAtualizada = await database.Pessoas.findOne(
-        {
-          where: { id: Number(id)}
-        }
-      )
+      const pessoaAtualizada = await pessoasServices.listarRegistroPorId(id);
+
       if(pessoaAtualizada === null){
         return res.status(500).json({mensagem: "id não encontrado"});
       }
@@ -117,11 +102,8 @@ class PessoaController {
     const {id} = req.params;
 
     try{
-      const pessoaDeletada = await database.Pessoas.destroy(
-        {
-          where: {id: Number(id)}
-        }
-      )
+      const pessoaDeletada = await pessoasServices.deletarRegistro(id);
+
       if(!pessoaDeletada){
         return res.status(500).json({mensagem: "Id não deletado"});
       }
@@ -134,11 +116,7 @@ class PessoaController {
   static async restaurarPessoa(req, res, next){
     const {id} = req.params;
     try {
-      const pessoaRestaurada = await database.Pessoas.restore(
-        {
-          where:{ id: Number(id)}
-        }
-      )
+      const pessoaRestaurada = await pessoasServices.restaurarRegistro(id);
 
       if(!pessoaRestaurada){
         return res.status(500).json({mensagem: "Id não restaurado"});

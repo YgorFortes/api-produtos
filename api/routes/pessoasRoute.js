@@ -5,9 +5,9 @@ const router = Router();
 
 router
 .get('/pessoas/filtro',PessoaController.listarPessoaPorFiltro)
-.get('/pessoas', PessoaController.listarTodasPessoas)
-.get('/pessoas/ativas', PessoaController.listarPessoasAtivas)
-.get('/pessoas/desativadas', PessoaController.listarPessoasDesativadas)
+.get('/pessoas/todos', PessoaController.listarTodasPessoas)
+.get('/pessoas/desativados', PessoaController.listarPessoasDesativadas)
+.get('/pessoas/', PessoaController.listarPessoasAtivas)
 .get('/pessoas/:id', PessoaController.listarPessoaPorId)
 .post('/pessoas/', PessoaController.criarPessoa)
 .post('/pessoas/:id/restaurar', PessoaController.restaurarPessoa)

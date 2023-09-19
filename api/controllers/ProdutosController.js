@@ -2,6 +2,8 @@ const database = require('../models/index.js');
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;;
+
+
 class ProdutosController{
 
   static async listarProdutos(__, res, next){

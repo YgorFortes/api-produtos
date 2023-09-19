@@ -72,8 +72,10 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     paranoid:true,
     defaultScope: {where :{ativo: true}}, //Mostrando só pessoas ativas 
-    scopes: {desativadas: {where: {ativo: false}}},
-    scopes: {todas: {where: {}}},
+    scopes: {
+      desativados: {where: {ativo: false}},
+      todas: {where: {}}
+    },
     modelName: 'Pessoas',
   });
 
