@@ -43,7 +43,16 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     modelo: DataTypes.STRING,
-    marca: DataTypes.STRING
+    marca: DataTypes.STRING,
+    quantidade: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isInt: {
+          args: true,
+          msg: 'Válido somente números inteiros',
+        }
+      }
+    }
   }, {
     sequelize,
     paranoid:true,

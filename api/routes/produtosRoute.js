@@ -11,6 +11,7 @@ router
 .post('/produtos/:id/restaurar', ProdutosController.restaurarProduto)
 .put('/produtos/:id', ProdutosController.atualizarProduto)
 .delete('/produtos/:id', ProdutosController.deletarProduto)
+.delete('/produtos/quantidade/:id', ProdutosController.desativarProdutoPorQuantidade)
 
 
 module.exports = router;
