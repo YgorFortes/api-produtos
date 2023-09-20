@@ -1,5 +1,6 @@
 const Services = require('./services.js');
 const database = require('../models/index.js');
+const { where } = require('sequelize');
 
 class VendasServices extends Services{
   constructor(){
@@ -22,6 +23,10 @@ class VendasServices extends Services{
         }
       } 
     );
+  }
+
+  async atualizarRegistro(id, novaInformacao, transacao = {}){
+    return database[this.nomeModelo].update(novaInformacao,  {where: {id: Number(id)}, transacao })
   }
 }
 

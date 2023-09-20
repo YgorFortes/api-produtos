@@ -1,18 +1,12 @@
 const database = require('../models/index.js');
-const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
+const {FornecedoresServices} = require('../services/index.js');
+const fornecedoresServices = new FornecedoresServices;
 class FornecedorController{
 
   static async listarFornecedores(__, res, next) {
     try {
-      const resultadoListaFornecedores = await database.Fornecedores.findAll(
-        {
-          include: {
-            model: database.Produtos,
-            as: "produtos",
-            attributes: ['nome','valor','marca','modelo'],
-          },
-        }
-      );
+      const resultadoListaFornecedores = await fornecedoresServices.listarTodosOsRegistros();
 
      if(resultadoListaFornecedores.length < 1){
         return res.status(500).json({mensagem: "Fornecedores não encontrado"});
@@ -27,16 +21,7 @@ class FornecedorController{
   static async listarFonecedorPorId(req, res, next){
     const {id} = req.params;
     try {
-      const resultadoFornecedorPorId = await database.Fornecedores.findOne(
-        {
-          where: {id: Number(id)},
-          include: {
-            model: database.Produtos,
-             as: "produtos",
-            attributes: ['nome','valor','marca','modelo'],
-          }
-        }
-      );
+      const resultadoFornecedorPorId = await fornecedoresServices.listarRegistroPorId(id);
 
       if(resultadoFornecedorPorId === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
@@ -51,7 +36,8 @@ class FornecedorController{
   static async listarFornecedorPorFiltro(req, res, next){
     const where = filtros(req.query);
     try {
-      const resultadoFiltro = await database.Fornecedores.findAll({...where});
+
+      const resultadoFiltro = await fornecedoresServices.listarRegistroPorFiltro(where)
   
       if(resultadoFiltro.length < 1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -64,16 +50,15 @@ class FornecedorController{
   }
 
   static async criarFornecedor(req, res, next){
-    const {cnpj,telefone,produtos, ...informacaoNovoFornecedor} = req.body;
-    const cnpjFormatado = formatarCnpj(cnpj);
-    const telefoneFormatado = formataTelefone(telefone);
+
+    const {cnpj, telefone, produtos, ...infoFornecedor} = req.body;
+    const where = {
+      cnpj : cnpj,
+      telefone: telefone,
+    }
+    
     try {
-      const [novoFornecedor, criado] = await database.Fornecedores.findOrCreate(
-        {
-          where: { cnpj : cnpjFormatado, telefone: telefoneFormatado}, 
-          defaults: {...informacaoNovoFornecedor}
-        }
-      );
+      const [novoFornecedor, criado] = await fornecedoresServices.criarRegistroOuEncontrar(infoFornecedor, where);
       
       if(criado){
         await novoFornecedor.setProdutos(produtos);
@@ -89,31 +74,15 @@ class FornecedorController{
   static async atualizarFornecedor (req, res, next){
     const {id} = req.params;
     const {produtos, ...infoFornecedor} = req.body;
-
     try {
-       await database.Fornecedores.update(infoFornecedor,
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const fornecedorAtualizado = await fornecedoresServices.atualizarRegistro(id, produtos, infoFornecedor);
 
-      const fornecedorAtualizadoEncontrado = await database.Fornecedores.findOne(
-        {
-          where: {id: Number(id)},
-          include: {
-            model: database.Produtos,
-             as: "produtos",
-            attributes: ['nome','valor','marca','modelo'],
-          }
-        },
-      );
-
-      if(produtos){
-        fornecedorAtualizadoEncontrado.setProdutos(produtos);
-      }else {
-        fornecedorAtualizadoEncontrado.getProdutos(produtos);
+      if(fornecedorAtualizado == null){
+        return res.status(500).json({mensagem: "Id não encontrado"});
       }
-      res.status(200).json(fornecedorAtualizadoEncontrado);
+
+      return res.status(200).json(fornecedorAtualizado);
+      
     } catch (erro) {
       next(erro);
     }
@@ -122,11 +91,8 @@ class FornecedorController{
   static async deletarFornecedor(req, res, next){
     const {id} = req.params;
     try {
-      const fornecedorDeletado = await database.Fornecedores.destroy( 
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const fornecedorDeletado = await fornecedoresServices.deletarRegistro(id);
+
 
       if(!fornecedorDeletado){
         return res.status(500).json({mensagem: "Id não deletado"});
@@ -141,11 +107,7 @@ class FornecedorController{
   static async restaurarFornecedor(req, res, next){
     const {id} = req.params;
     try {
-      const fornecedorRestaurado = await database.Fornecedores.restore(
-        {
-          where:{ id: Number(id)}
-        }
-      )
+      const fornecedorRestaurado = await fornecedoresServices.restaurarRegistro(id);
 
       if(!fornecedorRestaurado){
         return res.status(500).json({mensagem: "Id não restaurado"});

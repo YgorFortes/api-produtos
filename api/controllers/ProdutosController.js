@@ -1,7 +1,6 @@
-const database = require('../models/index.js');
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;;
+const {ProdutosServices} =  require("../services/index.js");
+const produtosServices = new ProdutosServices;
 
 
 class ProdutosController{
@@ -9,15 +8,7 @@ class ProdutosController{
   static async listarProdutos(__, res, next){
 
     try {
-      const resultadoListaProdutos = await database.Produtos.scope('estoque').findAll(
-        {
-          include: {
-            model: database.Fornecedores,
-            as: "fornecedores",
-            attributes: ['nome','endereco','telefone','cnpj'],
-          }
-        }
-      );
+      const resultadoListaProdutos = await produtosServices.listarTodosOsProdutosEmEstoque();
 
       if(resultadoListaProdutos.length < 1){
         return res.status(500).json({mensagem: "Produtos não encontrado"});
@@ -31,15 +22,7 @@ class ProdutosController{
 
   static async listarTodosProdutos(__, res, next){
     try {
-      const resultadoListaProdutos = await database.Produtos.findAll(
-        {
-          include: {
-            model: database.Fornecedores,
-            as: "fornecedores",
-            attributes: ['nome','endereco','telefone','cnpj'],
-          }
-        }
-      );
+      const resultadoListaProdutos = await produtosServices.listarTodosOsRegistros();
 
       if(resultadoListaProdutos.length < 1){
         return res.status(500).json({mensagem: "Produtos não encontrado"});
@@ -55,16 +38,7 @@ class ProdutosController{
     const {id} = req.params;
 
     try {
-      const resultadoProdutoId = await database.Produtos.findOne(
-        {
-          where: {id: Number(id)},
-          include: {
-            model: database.Fornecedores,
-            as: "fornecedores",
-            attributes:  ['nome','endereco','telefone','cnpj'],
-          }
-        }
-      );
+      const resultadoProdutoId = await produtosServices.listarRegistroPorId(id)
 
       if(resultadoProdutoId === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
@@ -79,7 +53,7 @@ class ProdutosController{
   static async listarProdutoPorFiltro(req, res, next){
     const where = filtros(req.query);
     try {
-      const resultadoFiltro = await database.Produtos.findAll({...where});
+      const resultadoFiltro = await produtosServices.listarRegistroPorFiltro(where);
       
       if(resultadoFiltro.length < 1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -94,19 +68,14 @@ class ProdutosController{
 
   static async criarProduto(req, res, next){
     const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
-    console.log({...infoNovoProduto})
+    const where = {
+      nome : nome,
+      modelo: modelo,
+      marca: marca
+    }
+
     try {
-      const [novoProduto, criado] = await database.Produtos.findOrCreate(
-        {
-          where: 
-          {
-            nome : nome,
-            modelo: modelo,
-            marca: marca
-          }, 
-          defaults: {...infoNovoProduto}
-        },
-      );
+      const [novoProduto, criado] = await produtosServices.criarRegistroOuEncontrar(infoNovoProduto, where);
 
       if(criado){
         await novoProduto.setFornecedores(fornecedores);
@@ -123,33 +92,12 @@ class ProdutosController{
   static async atualizarProduto(req, res, next){
     const {fornecedores, ...infoProduto} = req.body;
     const {id} = req.params;
-    
+
     try {
-      await database.Produtos.update(infoProduto, 
-        {
-          where: {id : Number(id)}
-        }
-      )
-
-      const produtoAtualizado = await database.Produtos.findOne(
-        {
-          where: {id: Number(id)},
-          include: {
-            model: database.Fornecedores,
-            as: "fornecedores",
-            attributes:  ['nome','endereco','telefone','cnpj'],
-          }
-        }
-      )
-
-      if(fornecedores){
-        produtoAtualizado.setFornecedores(fornecedores);
-      }else {
-         produtoAtualizado.getFornecedores(fornecedores);
-      }
-
+      const produtoAtualizado = await produtosServices.atualizarRegistro(id, fornecedores, infoProduto)
       
-      return res.status(200).json(produtoAtualizado)
+      return res.status(200).json( produtoAtualizado); 
+      
     } catch (erro) {
       return res.status(500).json(erro.message)
     }
@@ -158,11 +106,7 @@ class ProdutosController{
   static async deletarProduto(req, res, next){
     const {id} = req.params;
     try {
-      const produtoDeletado = await database.Produtos.destroy(
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const produtoDeletado = await produtosServices.deletarRegistro(id)
 
       if(!produtoDeletado){
         return res.status(500).json({mensagem: "Id não deletado"});
@@ -177,16 +121,11 @@ class ProdutosController{
   static async restaurarProduto(req, res, next){
     const {id} = req.params;
     try {
-      const produtoRestaurado = await database.Produtos.restore(
-        {
-          where:{ id: Number(id)}
-        }
-      )
+      const produtoRestaurado = await produtosServices.restaurarRegistro(id)
       
       if(!produtoRestaurado){
         return res.status(500).json({mensagem: "Id não restaurado"});
       }
-
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
       next(erro);
@@ -196,10 +135,13 @@ class ProdutosController{
   static async desativarProdutoPorQuantidade(req, res, next){
     const {id} = req.params;
     try {
-      const desativarProdutoPorQuantidade = await database.Produtos.destroy({
-        where: {id: Number(id), quantidade: {[Op.lte]: 0 }}
-      });
-      res.status(200).json(desativarProdutoPorQuantidade)
+      const produtoDesativado = await produtosServices.desativarProdutoSemEstoque(id);
+
+      if(!produtoDesativado){
+        return res.status(500).json({mensagem: "Id não desativado"});
+      }
+
+      res.status(200).json({mensagem: `Id: ${id} desativado`})
     } catch (erro) {
       next(erro);
     }

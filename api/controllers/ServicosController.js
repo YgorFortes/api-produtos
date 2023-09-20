@@ -62,13 +62,9 @@ class ServicosController {
     const {id} = req.params;
     const novaInforServico = req.body;
     try {
-      await servicosServices.atualizarRegistro(id, novaInforServico);
+      await servicosServices.atualizarRegistro(id, novaInforServico)
       
-      const novoServicoAtualizado = await database.Servicos.findOne(
-        {
-          where: {id: Number(id)}
-        }
-      );
+      const novoServicoAtualizado = await servicosServices.listarRegistroPorId(id);
 
       if(novoServicoAtualizado === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
