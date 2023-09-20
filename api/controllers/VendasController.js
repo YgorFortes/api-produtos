@@ -40,7 +40,7 @@ class VendasController{
   static async listarVendaPorFiltro(req, res, next){
     const where = filtro(req.query);
     try{
-      const resultadoFiltro = await vendasServices.listarRegistroPorFiltro(where)
+      const resultadoFiltro = await vendasServices.listarRegistroPorFiltro(where);
 
       if(resultadoFiltro.length <1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -100,6 +100,7 @@ class VendasController{
       await vendasServices.atualizarRegistro(id, novaInfoVenda);
 
       const novaVendaAtualizada = await vendasServices.listarRegistroPorId(id);
+      
       if(novaVendaAtualizada === null){
         return res.status(500).json({mensagem: "Id não encontrado"});
       }

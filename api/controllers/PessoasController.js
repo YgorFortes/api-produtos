@@ -69,10 +69,15 @@ class PessoaController {
   }
 
   static async criarPessoa (req, res, next) {
+
     const {cpf, ...novaPessoa} = req.body;
     const cpfFormatado = formataCpf(cpf);
+    const where = {
+      cpf: cpfFormatado
+    }
+
     try{
-      const [novaPessoaCriada, criado] = await pessoasServices.criarRegistro("cpf", cpfFormatado, novaPessoa);
+      const [novaPessoaCriada, criado] = await pessoasServices.criarRegistroOuEncontrar(novaPessoa, where)
       criado?  res.status(201).json(novaPessoaCriada) :   res.status(409).json({mensagem: 'Cpf já cadastrado'});
 
     }catch(erro){

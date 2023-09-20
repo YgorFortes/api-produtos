@@ -21,15 +21,18 @@ class Services {
     return database[this.nomeModelo].create(informacao)
   }
 
-  async criarRegistroOuEncontrar(tabelaCondicao, valorCondicao,informacao){
-    return database[this.nomeModelo].findOrCreate( {
-      where: { [tabelaCondicao] : valorCondicao}, 
-      defaults: {...informacao}
-    },);
+  async criarRegistroOuEncontrar(informacao , where = {}){
+    return database[this.nomeModelo].findOrCreate( 
+      {
+        where, 
+        defaults: {...informacao}
+      }
+    );
+    
   }
 
   async atualizarRegistro(id, novaInformacao){
-    return  database[this.nomeModelo].update(novaInformacao ,{where: {id: Number(id)}});
+    return database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
   }
 
   async deletarRegistro(id){
