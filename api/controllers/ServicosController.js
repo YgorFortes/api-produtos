@@ -34,10 +34,9 @@ class ServicosController {
   }
 
   static async listarServicosPorFiltro(req, res, next){
-    const where = filtros(req.query);
-    
     try {
-      const resultadoPorFiltro = await servicosServices.listarRegistroPorFiltro(where);
+      const resultadoPorFiltro = await servicosServices.listarRegistroPorFiltro(req.query);
+      
       if(resultadoPorFiltro.length <1 ){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
       }
@@ -110,20 +109,6 @@ class ServicosController {
 
 }
 
-function filtros(parametros){
-  const {tipo, dataEntrega, pessoaId, nomePessoa} = parametros;
-  let  where = {};
-  if(tipo ) where.tipo = tipo ;
-  if(dataEntrega) where.data_entrega = dataEntrega ;
-  if(pessoaId)  where.pessoa_id = pessoaId ;
-
-  if(nomePessoa) {
-    const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
-    return {where, include}
-  }
-  
-  return {where}
-}
 
 
 

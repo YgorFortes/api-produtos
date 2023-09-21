@@ -2,6 +2,7 @@ const Services = require('./services.js');
 const database = require('../models/index.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
 class ProdutosServices extends Services{
   constructor() {
@@ -33,8 +34,33 @@ class ProdutosServices extends Services{
     )
   }
 
-  async atualizarRegistro(id, fornecedores, novaInformacao){
+  async listarRegistroPorFiltro(parametros){
+    const {nome, modelo, marca, fornecedorId, nomeFornecedor} = parametros;
+    let where = {};
   
+    if(nome) where.nome = nome;
+    if(modelo) where.modelo = modelo;
+    if(marca) where.marca = marca;
+
+    if(fornecedorId){
+      
+    }
+  
+    if (fornecedorId || nomeFornecedor) {
+      const include = associacaoInclude(
+          database.Fornecedores,
+          fornecedorId ? "id" : "nome",
+          fornecedorId || nomeFornecedor,
+          "FornecedorProduto",
+          "fornecedores"
+      );
+      return database[this.nomeModelo].findAll({where, include});
+    }
+    return database[this.nomeModelo].findAll({where} );
+  }
+
+  async atualizarRegistro(id, fornecedores, novaInformacao){
+
     await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
     const produto = await database[this.nomeModelo].findByPk(id);
    
@@ -44,7 +70,6 @@ class ProdutosServices extends Services{
       await produto.getFornecedores(fornecedores);
     }
     
-
     return database[this.nomeModelo].findOne( 
       {
         where: {id: Number(id)},
@@ -57,8 +82,6 @@ class ProdutosServices extends Services{
     );
      
   }
-  
-  
 
   async desativarProdutoSemEstoque(id){
    return database[this.nomeModelo].destroy({where: {id: Number(id), quantidade: {[Op.lte]: 0 }}});

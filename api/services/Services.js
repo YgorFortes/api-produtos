@@ -13,9 +13,10 @@ class Services {
     return  database[this.nomeModelo].findOne({where: {id: Number(id)}});
   }
   
-  async listarRegistroPorFiltro(argumentos){
-    return database[this.nomeModelo].findAll({...argumentos});
+  async listarRegistroPorFiltro(parametros){
+    return database[this.nomeModelo].findAll({...parametros});
   }
+  
 
   async criarRegistro(informacao, transacao = {}){
     return database[this.nomeModelo].create(informacao , transacao)

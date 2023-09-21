@@ -1,5 +1,6 @@
 const database = require('../models/index.js');
 const Services = require('./services.js');
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
 class IntemVendasService extends Services{
   constructor(){
@@ -29,11 +30,32 @@ class IntemVendasService extends Services{
     });
   }
 
-  async atualizarRegistro(id, novaInformacao){
+  async listarRegistroPorFiltro(parametros){
+    const {idProduto, idVenda} = parametros;
   
+    let where = {};
+  
+    if(idProduto) where.produto_id = idProduto;
+    if(idVenda) where.venda_id = idVenda;
+  
+  
+    if(idVenda) {
+      const include = associacaoInclude(database.Vendas,"id", idVenda)
+      return database[this.nomeModelo].findAll({where, include} );
+    }
+  
+    if(idProduto) {
+      const include = associacaoInclude(database.Produtos,"id", idProduto)
+      return database[this.nomeModelo].findAll({where, include} );
+    }
+  
+  
+    return database[this.nomeModelo].findAll({where} );
+  }
+
+  async atualizarRegistro(id, novaInformacao){
     await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
     
-
     return database[this.nomeModelo].findOne({
       where: {id: Number(id)},
         include:

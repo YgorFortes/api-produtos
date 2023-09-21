@@ -1,6 +1,6 @@
 const database = require('../models/index.js');
 const {IntemVendasServices} = require('../services/index.js');
-
+const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 const itemVendasServices = new IntemVendasServices;
 
 class ItemVendasController{
@@ -29,6 +29,21 @@ class ItemVendasController{
       }
 
       return res.status(200).json(resultadoListaItemVendasPorId);
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async listarItemVendasPorFilro(req, res, next){
+    try {
+
+      const resultadoFiltro = await itemVendasServices.listarRegistroPorFiltro(req.query)
+  
+      if(resultadoFiltro.length < 1){
+        return res.status(500).json({mensagem: "Resultado não encontrado"});
+      }
+
+      return res.status(200).json(resultadoFiltro);
     } catch (erro) {
       next(erro);
     }
