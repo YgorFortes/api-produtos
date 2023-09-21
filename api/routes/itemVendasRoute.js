@@ -7,7 +7,7 @@ router
 .get('/itemVendas',ItemVendasController.listarItemVendas)
 .get('/itemVendas/:id',ItemVendasController.listarItemVendasPorId)
 .post('/itemVendas/:id/restaurar', ItemVendasController.restaurarItemVendas)
-.put('/itemVendas/:id', ItemVendasController.atualizarItemVenda)
+/* .put('/itemVendas/:id', ItemVendasController.atualizarItemVenda) */
 .delete('/itemVendas/:id',ItemVendasController.deletarItemVenda)
 
 module.exports = router;

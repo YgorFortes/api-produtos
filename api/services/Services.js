@@ -17,8 +17,8 @@ class Services {
     return database[this.nomeModelo].findAll({...argumentos});
   }
 
-  async criarRegistro(informacao){
-    return database[this.nomeModelo].create(informacao)
+  async criarRegistro(informacao, transacao = {}){
+    return database[this.nomeModelo].create(informacao , transacao)
   }
 
   async criarRegistroOuEncontrar(informacao , where = {}){
@@ -31,7 +31,7 @@ class Services {
     
   }
 
-  async atualizarRegistro(id, novaInformacao){
+  async atualizarRegistro(id, novaInformacao, transacao = {}){
     return database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
   }
 

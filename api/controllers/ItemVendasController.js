@@ -35,7 +35,7 @@ class ItemVendasController{
   }
 
 
-  static async atualizarItemVenda(req, res, next){
+  /* static async atualizarItemVenda(req, res, next){
     const {id} = req.params;
     const novaInfoItemVenda = req.body;
     try{
@@ -44,7 +44,7 @@ class ItemVendasController{
     } catch(erro){
       next(erro);
     }
-  }
+  } */
 
   static async deletarItemVenda(req, res , next){
     const {id} = req.params;
