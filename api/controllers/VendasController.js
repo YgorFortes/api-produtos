@@ -54,39 +54,11 @@ class VendasController{
   static async criarVenda(req, res, next) {
     const novaVenda = req.body;
     const {idProduto, quantidadeProdutoComprado} = req.params;
-    let quantidadeVendido = 0;
-    let conteudo = {}
  
     try {
-      database.sequelize.transaction(async transacao => {
-        const novaVendaCriada = await database.Vendas.create(novaVenda , {transaction: transacao});
-        const produto = await database.Produtos.findByPk(idProduto, {transaction: transacao});
-
-        const quantidadeProduto = produto.quantidade;
-        
-
-        if(quantidadeProdutoComprado <= quantidadeProduto){
-          quantidadeVendido = Number(quantidadeProdutoComprado)
-        } else {
-          return res.status(500).json({mensagem: 'Sem estoque na quantidade desejada'});
-        }     
-     
-       
-        const valorTotal = (quantidadeVendido * produto.valor) 
-        const idVendaCriada = novaVendaCriada.id;
-        const produtoId = produto.id;
-    
-        conteudo = {quantidade: quantidadeVendido, valor : valorTotal, venda_id: idVendaCriada, produto_id:  produtoId};
-
-
-        const quantidadeAtual =  ( quantidadeProduto - Number(quantidadeProdutoComprado) );
-
-        const novoItemVendaCriado = await database.ItemVendas.create(conteudo, {transaction: transacao});
-
-        database.Produtos.update({quantidade: Number(quantidadeAtual)}, { where: {id : Number(produtoId)}}, {transaction: transacao});
-
-        return res.status(200).json(novoItemVendaCriado);
-      })
+      const novoItemVendaCriado = await vendasServices.criarRegistro(novaVenda, idProduto, quantidadeProdutoComprado);
+  
+      return res.status(200).json(novoItemVendaCriado);
     } catch (erro) {
       next(erro);
     }
