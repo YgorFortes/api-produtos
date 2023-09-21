@@ -1,5 +1,6 @@
 const Services = require('./services.js');
-const database = require('../models/index.js')
+const database = require('../models/index.js');
+const formataCpf = require('../funcoesEspecificas/formatarCpf.js')
 class PessoasServices extends Services{
   constructor(){
     super('Pessoas');
@@ -11,6 +12,16 @@ class PessoasServices extends Services{
 
   async listarRegistroDesativados(){
     return database[this.nomeModelo].scope('desativados').findAll();
+  }
+
+  async listarRegistroPorFiltro(parametros){
+    const {nome,cpf} = parametros;
+    const where = {};
+    if (nome)   where.nome  = nome;
+    if (cpf)  where.cpf  =  formataCpf(cpf);
+    console.log({where})
+    return database[this.nomeModelo].findAll({where});
+      
   }
 
   

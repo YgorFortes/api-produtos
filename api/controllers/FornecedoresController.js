@@ -34,10 +34,8 @@ class FornecedorController{
   }
 
   static async listarFornecedorPorFiltro(req, res, next){
-    const where = filtros(req.query);
     try {
-
-      const resultadoFiltro = await fornecedoresServices.listarRegistroPorFiltro(where)
+      const resultadoFiltro = await fornecedoresServices.listarRegistroPorFiltro(req.query)
   
       if(resultadoFiltro.length < 1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -48,6 +46,7 @@ class FornecedorController{
       next(erro);
     }
   }
+  
 
   static async criarFornecedor(req, res, next){
 
@@ -121,56 +120,5 @@ class FornecedorController{
   }
 
 }
-
-function formatarCnpj(cnpj){
-  if(cnpj){
-    const cnpjSemCaracter = cnpj.replace(/\D/g, '');
-    const cnpjFormatado = cnpjSemCaracter.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
-    return cnpjFormatado
-  }
-  return cnpj = "";
-}
-
-function formataTelefone (telefone){
-  if(telefone){
-    const telefoneSemCaracter = telefone.replace(/\D/g, '');
-    const telefoneFormatado = telefoneSemCaracter.replace(/^(\d{2})(\d{5}|\d{4})(\d{4})$/, "($1) $2-$3");
-    return telefoneFormatado;
-  }
-  return telefone = "";
-}
-
-
-
-function filtros(parametros){
-  const {nome, endereco, telefone, cnpj, nomeProduto, marcaProduto,  modeloProduto} = parametros;
-  let where = {};
-  if(nome) where.nome = nome;
-  if(endereco) where.endereco = endereco;
-  if(telefone) where.telefone = formataTelefone(telefone)
-  if(cnpj) where.cnpj = formatarCnpj(cnpj);
-
-  if(nomeProduto) {
-    const include = associacaoInclude(database.Produtos, 'nome', nomeProduto, 'FornecedorProduto','produtos');
-
-    return {where, include}
-  }
-
-  if(marcaProduto){
-    const include = associacaoInclude(database.Produtos, 'marca', marcaProduto, 'FornecedorProduto','produtos');
-
-    return {where, include}
-  }
-
-  if(modeloProduto) {
-    const include = associacaoInclude(database.Produtos, 
-    'FornecedorProduto','produtos', 'modelo', modeloProduto);
-    return {where, include}
-  }
-  
-
-  return {where};
-}
-
 
 module.exports = FornecedorController;

@@ -1,6 +1,8 @@
 const {PessoasServices} =  require("../services/index.js");
 const pessoasServices = new PessoasServices;
 
+const formataCpf = require('../funcoesEspecificas/formatarCpf.js');
+
 class PessoaController {
   static async listarTodasPessoas(__, res, next){
     try{
@@ -42,9 +44,8 @@ class PessoaController {
 
   static async listarPessoaPorFiltro(req, res, next){
   
-    const where = filtros(req.query)
     try{
-      const resultadoFiltro = await  pessoasServices.listarRegistroPorFiltro(where);
+      const resultadoFiltro = await  pessoasServices.listarRegistroPorFiltro(req.query);
       if(resultadoFiltro.length <1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
       }
@@ -135,23 +136,8 @@ class PessoaController {
   }
 }
 
-function formataCpf(cpf){
-  if(cpf){
-    const dado = cpf.replace(/\D/g, '');
-    const cpfFormatado = dado.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1-$2-$3-$4'); 
-    return cpfFormatado;
-  } 
-  return cpf = "";
-  
-}
 
-function filtros(parametros){
-  const {nome,cpf} = parametros;
-  const where = {};
-  if (nome)   where.nome  = nome;
-  if (cpf)  where.cpf  =  formataCpf(cpf);
 
-  return {where} ;
-}
+
 
 module.exports = PessoaController;

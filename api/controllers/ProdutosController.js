@@ -51,9 +51,8 @@ class ProdutosController{
   }
 
   static async listarProdutoPorFiltro(req, res, next){
-    const where = filtros(req.query);
     try {
-      const resultadoFiltro = await produtosServices.listarRegistroPorFiltro(where);
+      const resultadoFiltro = await produtosServices.listarRegistroPorFiltro(req.query);
       
       if(resultadoFiltro.length < 1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -148,24 +147,5 @@ class ProdutosController{
   }
 }
 
-function filtros(parametros){
-  const {nome, modelo, marca, fornecedorId, nomeFornecedor} = parametros;
-  let where = {};
-
-  if(nome) where.nome = nome;
-  if(modelo) where.modelo = modelo;
-  if(marca) where.marca = marca;
-
-  if(fornecedorId || nomeFornecedor  ) {
-    const include = associacaoInclude(
-      database.Fornecedores, "id" || "nome", 
-      fornecedorId  || nomeFornecedor, 
-      'FornecedorProduto',  
-      'fornecedores');
-    return where = {where, include}
- }
-
-  return {where};
-}
 
 module.exports = ProdutosController;

@@ -1,7 +1,5 @@
 const {VendasServices} = require('../services/index.js');
-const database = require('../models')
-const Sequelize = require ('sequelize');
-const Op = Sequelize.Op;
+const database = require('../models');
 const vendasServices = new VendasServices;
 
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js');
@@ -38,9 +36,8 @@ class VendasController{
   }
 
   static async listarVendaPorFiltro(req, res, next){
-    const where = filtro(req.query);
     try{
-      const resultadoFiltro = await vendasServices.listarRegistroPorFiltro(where);
+      const resultadoFiltro = await vendasServices.listarRegistroPorFiltro(req.query);
 
       if(resultadoFiltro.length <1){
         return res.status(500).json({mensagem: "Resultado não encontrado"});
@@ -54,10 +51,10 @@ class VendasController{
   static async criarVenda(req, res, next) {
     const novaVenda = req.body;
     const {idProduto, quantidadeProdutoComprado} = req.params;
- 
+
     try {
-      const novoItemVendaCriado = await vendasServices.criarRegistro(novaVenda, idProduto, quantidadeProdutoComprado);
-  
+      const novoItemVendaCriado = await vendasServices.criarRegistro(novaVenda, idProduto, quantidadeProdutoComprado); 
+      
       return res.status(200).json(novoItemVendaCriado);
     } catch (erro) {
       next(erro);
@@ -113,40 +110,7 @@ class VendasController{
   }
 }
 
-function formatarData(data){
-  if(data){
-    const dataFormatoBrasil = new Date(data).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-    return dataFormatoBrasil
-  }
-  return data = ""
 
-} 
-
-
-function filtro(parametros){
-  const {dataPagamento, dataEntrega, dataVenda, nomePessoa,  dataInicial, dataFinal, nomeData} = parametros;
-  
-  let where = {};
-
-  if(dataPagamento) where.data_pagamento = dataPagamento;
-  if(dataEntrega) where.data_entrega = dataEntrega;
-  if(dataVenda) where.data_venda = dataVenda;
-
-  if(nomePessoa) {
-    const include = associacaoInclude(database.Pessoas, "nome", nomePessoa);
-    return {where, include}
-    
-  }
-
-
-  dataInicial ||dataFinal ? where[nomeData] = {}  :  null;
-  dataInicial ? where[nomeData][Op.gte] =  formatarData(dataInicial): null;
-  dataFinal ? where[nomeData][Op.lte] = formatarData(dataFinal) : null;
-
-
-  return {where}
-  
-}
 module.exports = VendasController;
 
 
