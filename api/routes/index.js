@@ -1,10 +1,12 @@
 const express = require("express");
 const pessoas = require("./pessoasRoute.js");
 const fornecedores = require('./fornecedoresRoute.js')
-const servicos = require('./servicosRoute.js')
+const servicos = require('./servicosRoute.js');
 const vendas = require('./vendasRouter.js');
-const produtos = require('./produtosRoute.js')
-const itemVendas = require('./itemVendasRoute.js')
+const produtos = require('./produtosRoute.js');
+const itemVendas = require('./itemVendasRoute.js');
+const login = require('./loginRoute.js');
+
 
 module.exports = app => {
   app.route("/teste").get((req, res) =>{
@@ -17,7 +19,8 @@ module.exports = app => {
     servicos,
     vendas,
     produtos,
-    itemVendas
+    itemVendas,
+    login
   )
  
   

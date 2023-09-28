@@ -19,12 +19,9 @@ class PessoasServices extends Services{
     const where = {};
     if (nome)   where.nome  = nome;
     if (cpf)  where.cpf  =  formataCpf(cpf);
-    console.log({where})
     return database[this.nomeModelo].findAll({where});
       
   }
-
   
 }
-
 module.exports = PessoasServices;

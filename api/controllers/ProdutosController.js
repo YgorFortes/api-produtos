@@ -98,7 +98,7 @@ class ProdutosController{
       return res.status(200).json( produtoAtualizado); 
       
     } catch (erro) {
-      return res.status(500).json(erro.message)
+      next(erro);
     }
   }
 
