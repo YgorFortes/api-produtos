@@ -1,16 +1,16 @@
 const Router = require ( "express");
 const FornecedorController = require('../controllers/FornecedoresController');
-
+const verificaToken = require('../middlewares/verificaToken.js');
 const router = Router();
 
 router
-.get('/fornecedores/filtro',FornecedorController.listarFornecedorPorFiltro)
-.get('/fornecedores', FornecedorController.listarFornecedores)
-.get('/fornecedores/:id',FornecedorController.listarFonecedorPorId)
-.post('/fornecedores/',FornecedorController.criarFornecedor)
-.post('/fornecedores/:id/restaurar', FornecedorController.restaurarFornecedor)
-.put('/fornecedores/:id', FornecedorController.atualizarFornecedor)
-.delete('/fornecedores/:id', FornecedorController.deletarFornecedor)
+.get('/fornecedores/filtro',verificaToken, FornecedorController.listarFornecedorPorFiltro)
+.get('/fornecedores',verificaToken, FornecedorController.listarFornecedores)
+.get('/fornecedores/:id',verificaToken, FornecedorController.listarFonecedorPorId)
+.post('/fornecedores/',verificaToken, FornecedorController.criarFornecedor)
+.post('/fornecedores/:id/restaurar',verificaToken, FornecedorController.restaurarFornecedor)
+.put('/fornecedores/:id',verificaToken, FornecedorController.atualizarFornecedor)
+.delete('/fornecedores/:id',verificaToken, FornecedorController.deletarFornecedor)
   
 
 
