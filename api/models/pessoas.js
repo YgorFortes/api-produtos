@@ -48,15 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         }
         }
     },
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        isEmail: {
-          args: true,
-          msg: 'Dados do tipo email inválidos'
-        }
-      }
-    },
     endereco: DataTypes.STRING,
     funcao: DataTypes.STRING,
     ativo: {
