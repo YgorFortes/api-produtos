@@ -41,11 +41,8 @@ class ProdutosServices extends Services{
     if(nome) where.nome = nome;
     if(modelo) where.modelo = modelo;
     if(marca) where.marca = marca;
-
-    if(fornecedorId){
-      
-    }
   
+
     if (fornecedorId || nomeFornecedor) {
       const include = associacaoInclude(
           database.Fornecedores,
@@ -56,6 +53,8 @@ class ProdutosServices extends Services{
       );
       return database[this.nomeModelo].findAll({where, include});
     }
+
+
     return database[this.nomeModelo].findAll({where} );
   }
 
