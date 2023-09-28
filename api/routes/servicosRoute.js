@@ -1,16 +1,16 @@
 const Router = require("express");
 const ServicosController = require("../controllers/ServicosController");
-
+const verificaToken = require('../middlewares/verificaToken.js');
 
 const router = Router();
 
 router
-.get('/servicos/filtro', ServicosController.listarServicosPorFiltro)
-.get('/servicos',ServicosController.listarServicos)
-.get('/servicos/:id',ServicosController.listaServicosPorId)
-.post('/servicos', ServicosController.criarServico)
-.post('/servicos/:id/restaurar', ServicosController.restaurarServico)
-.put('/servicos/:id',ServicosController.atualizarServico)
-.delete('/servicos/:id', ServicosController.deletarServico)
+.get('/servicos/filtro',verificaToken, ServicosController.listarServicosPorFiltro)
+.get('/servicos',verificaToken, ServicosController.listarServicos)
+.get('/servicos/:id',verificaToken, ServicosController.listaServicosPorId)
+.post('/servicos',verificaToken, ServicosController.criarServico)
+.post('/servicos/:id/restaurar',verificaToken, ServicosController.restaurarServico)
+.put('/servicos/:id',verificaToken, ServicosController.atualizarServico)
+.delete('/servicos/:id',verificaToken, ServicosController.deletarServico)
 
 module.exports = router;

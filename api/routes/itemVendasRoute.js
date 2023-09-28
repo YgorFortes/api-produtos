@@ -1,14 +1,14 @@
 const Router = require('express');
 const ItemVendasController = require('../controllers/ItemVendasController');
-
+const verificaToken = require('../middlewares/verificaToken.js');
 const router = Router();
 
 router
-.get('/itemVendas/filtro',ItemVendasController.listarItemVendasPorFilro)
-.get('/itemVendas',ItemVendasController.listarItemVendas)
-.get('/itemVendas/:id',ItemVendasController.listarItemVendasPorId)
-.post('/itemVendas/:id/restaurar', ItemVendasController.restaurarItemVendas)
+.get('/itemVendas/filtro',verificaToken, ItemVendasController.listarItemVendasPorFilro)
+.get('/itemVendas',verificaToken, ItemVendasController.listarItemVendas)
+.get('/itemVendas/:id',verificaToken, ItemVendasController.listarItemVendasPorId)
+.post('/itemVendas/:id/restaurar',verificaToken, ItemVendasController.restaurarItemVendas)
 /* .put('/itemVendas/:id', ItemVendasController.atualizarItemVenda) */
-.delete('/itemVendas/:id',ItemVendasController.deletarItemVenda)
+.delete('/itemVendas/:id',verificaToken, ItemVendasController.deletarItemVenda)
 
 module.exports = router;
