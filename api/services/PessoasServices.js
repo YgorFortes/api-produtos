@@ -22,6 +22,16 @@ class PessoasServices extends Services{
     return database[this.nomeModelo].findAll({where});
       
   }
+
+  async detalharPessoa(idLogin){
+    return database[this.nomeModelo].findOne({
+      include: [{
+        model: database.Login,
+        where: { id: idLogin},
+        attributes:  ['id','email'],
+      }]
+    })
+  }
   
 }
 module.exports = PessoasServices;

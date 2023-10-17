@@ -10,25 +10,33 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nome: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      idade: {
-        type: Sequelize.INTEGER
+      data_nascimento: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
       cpf: {
-        type: Sequelize.STRING
-      },
-      email: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       endereco: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       funcao: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       ativo: {
+        allowNull: false,
         type: Sequelize.BOOLEAN
+      },
+      login_id:{
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references:{model: 'Login', key: 'id'}
       },
       createdAt: {
         allowNull: false,

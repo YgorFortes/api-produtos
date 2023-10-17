@@ -36,14 +36,6 @@ module.exports = {
       pessoa_id: 5,
       createdAt : new Date(),
       updatedAt : new Date()
-    },
-    {
-      tipo: "Manutenção",
-      data_entrega: new Date(),
-      preco: 90.99,
-      pessoa_id: 6,
-      createdAt : new Date(),
-      updatedAt : new Date()
     }
   ], {});
     

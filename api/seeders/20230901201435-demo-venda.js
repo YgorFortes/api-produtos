@@ -8,7 +8,7 @@ module.exports = {
         quantidade: 5,
         valor: 45.95,
         venda_id: 5,
-        produto_id: 11,
+        produto_id: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
