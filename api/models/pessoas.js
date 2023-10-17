@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       Pessoas.hasMany(models.Vendas, {
         foreignKey: 'pessoa_id'
       })
+      Pessoas.belongsTo(models.Login, {
+        foreignKey: 'login_id',
+      })
     }
   }
   Pessoas.init({
@@ -29,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    idade: {
-      type: DataTypes.INTEGER,
+    data_nascimento: {
+      type: DataTypes.DATE,
       validate:{
-        isInt: {
+        isDate: {
           args: true,
-          msg: 'O campo idade precisa ser um campo inteiro'
+          msg:  'Formato inválido de data'
         }
       }
     },
@@ -46,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
           args: /^\d{3}[\.-]?\d{3}[\.-]?\d{3}-?\d{2}$/,
           msg: 'Dados do tipo cpf inválidos'
         }
-        }
+      }
     },
     endereco: DataTypes.STRING,
     funcao: DataTypes.STRING,

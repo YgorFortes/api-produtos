@@ -64,7 +64,6 @@ class ProdutosController{
   }
 
 
-
   static async criarProduto(req, res, next){
     const {nome, modelo, marca, fornecedores, ...infoNovoProduto} = req.body;
     const where = {
@@ -146,6 +145,5 @@ class ProdutosController{
     }
   }
 }
-
 
 module.exports = ProdutosController;

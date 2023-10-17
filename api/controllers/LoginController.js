@@ -1,6 +1,7 @@
 const database = require('../models/index.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const {verificaCamposVazios} = require('../helpers/helpers.js');
 require('dotenv').config();
 
 class LoginController{
@@ -9,6 +10,13 @@ class LoginController{
     const {email, senha, confirmarSenha} =  req.body;
 
     try {
+      
+      //Verificando os campos vazios
+      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha', 'confirmarSenha');
+      if(erroCampos){
+        return res.status(400).send({mensagem: erroCampos})
+      }
+
       //Verificando se senhas correspondm
       if(senha !== confirmarSenha){
         return res.status(409).send({mensagem: 'Senhas não conferem'});
@@ -25,8 +33,11 @@ class LoginController{
       const senhaHash = await bcrypt.hash(senha, salt);
       const novoLogin = await database.Login.create({email: email, senha: senhaHash});
 
-      novoLogin.senha = undefined;
-      return res.status(201).send(novoLogin)
+
+     const novoLoginSemSenha = esconderSenha (novoLogin)
+      
+      return res.status(201).send(novoLoginSemSenha)
+
     } catch (erro) {
       console.log(erro)
       next(erro);
@@ -36,18 +47,28 @@ class LoginController{
   static async login(req, res, next){
     const {email, senha} = req.body;
     try {
+
+      //Verificando os campos vazios
+      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha');
+      if(erroCampos){
+        return res.status(400).send({mensagem: erroCampos})
+      }
+
+      //Busca no banco o email digitado
       const login = await database.Login.findOne({where: {email: email}});
 
+      //Verifica se existe usuario pelo email digitado 
       if(!login){
         return res.status(409).send({mensagem: 'Email não cadastrado'});
       }
 
+      //Confere se a senhas conferem 
       const verificaSenha = await bcrypt.compare(senha, login.senha);
-
       if(!verificaSenha){
         return res.status(422).send({mensagem: 'Senha inválida'});
       }
 
+      //Cria um token com o id de usuário
       const secret = process.env.SECRET;
       const token =  jwt.sign(
         {
@@ -62,5 +83,20 @@ class LoginController{
     }
   }
 }
+
+
+
+
+function esconderSenha (tabela){
+  const tabelaSemSenha = {
+    id: tabela.id,
+    email: tabela.email
+  }
+
+  return tabelaSemSenha
+}
+
+
+
 
 module.exports = LoginController;

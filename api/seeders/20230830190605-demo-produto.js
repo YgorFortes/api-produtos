@@ -10,38 +10,43 @@ module.exports = {
         valor: 35.95,
         modelo: "Mavic Ksyrium Elite",
         marca: "Mavic",   
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Freio",
         valor: 35.95,
         modelo: "Zipp 404 Firecrest",
         marca: "Zipp",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Corrente",
         valor: 35.95,
         modelo: "Shimano Dura-Ace",
         marca: "Shimano",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Aro",
         valor: 35.95,
         modelo: "HED Jet 6 Plus",
         marca: "HED",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Buzina",
         valor: 35.95,
         modelo: "Enve SES 3.4",
         marca: "Enve",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -50,38 +55,43 @@ module.exports = {
         valor: 35.95,
         modelo: "Shimano Ultegra",
         marca: "Shimano",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Pedal",
         valor: 35.95,
         modelo: "Campagnolo Bora Ultra Two",
         marca: "Campagnolo",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome: "Roda",
+        nome: "Quidon",
         valor: 35.95,
         modelo: "Reynolds Assault SLG Carbon Clincher Wheelset",
         marca: "Reynolds",
+        quantidade: 10,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        nome:"Roda", 
+        nome:"Retrovisor", 
         valor :35.95, 
         modelo:"Fulcrum Racing Zero Carbon", 
         marca:"Fulcrum", 
+        quantidade: 10,
         createdAt :new Date(), 
         updatedAt :new Date()
        },
        {
-        nome:"Roda", 
+        nome:"Moto", 
         valor :35.95, 
         modelo:"DT Swiss PR1600 Spline", 
         marca:"DT Swiss", 
+        quantidade: 10,
         createdAt :new Date(), 
         updatedAt :new Date()
        }
