@@ -2,7 +2,6 @@ const {PessoasServices} =  require("../services/index.js");
 const pessoasServices = new PessoasServices;
 const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
 const formataCpf = require('../funcoesEspecificas/formatarCpf.js');
-const { status } = require("init");
 
 class PessoaController {
   static async listarTodasPessoas(__, res){
@@ -185,7 +184,7 @@ class PessoaController {
 
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
-        return res.status(409).json({mensagem: 'Pessoa não cadastrada'});
+        return res.status(409).json({mensagem: 'Pessoa não atualizada'});
       }
   
       //Busca pessoa atualizada pelo seu id
