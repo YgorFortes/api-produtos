@@ -23,6 +23,11 @@ class LoginController{
       if(senha !== confirmarSenha){
         return res.status(409).send({mensagem: 'Senhas não conferem'});
       }
+      
+      //Verifica se a senha confere com a regex
+      if(!verificaCriterioSenha(senha)){
+        return res.status(422).send({mensagem: 'A senha precisa ter pelo menos uma letra maiúsculas , minúsculas, um número e um carácter especial'});
+      }
 
       //Verificando email já estar cadastrado
       const emailEncontrado = await database.Login.findOne({where: {email: email}});
@@ -140,6 +145,10 @@ function esconderSenha (tabela){
   return tabelaSemSenha
 }
 
+function verificaCriterioSenha(senha){
+  const regex = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])[A-Za-z\d@#$%&*_-]/
+  return regex.test(senha);
+}
 
 
 
