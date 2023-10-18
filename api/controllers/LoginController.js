@@ -1,8 +1,9 @@
 const database = require('../models/index.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const {LoginServices} = require('../services/index.js');
+const loginServices = new LoginServices;
 const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
-const { where } = require('sequelize');
 require('dotenv').config();
 
 class LoginController{
@@ -31,7 +32,7 @@ class LoginController{
 
       //Criptogrfando a senha
       const senhaHash = await criptografaSenha(senha);
-      const novoLogin = await database.Login.create({email: email, senha: senhaHash});
+      const novoLogin = await loginServices.criarRegistro({email: email, senha: senhaHash});
 
 
      const novoLoginSemSenha = esconderSenha (novoLogin)
@@ -55,7 +56,7 @@ class LoginController{
       }
 
       //Busca no banco o email digitado
-      const login = await database.Login.findOne({where: {email: email}});
+      const login = await loginServices.listarRegistroPorEmail(email);
 
       //Verifica se existe usuario pelo email digitado 
       if(!login){
@@ -97,7 +98,7 @@ class LoginController{
       const idLogin = await  resgatarIdLogin(req);
 
       //Buscando login e verificando se existe 
-      const login = await database.Login.findOne({where: {id: idLogin}});
+      const login = await loginServices.listarRegistroPorId(idLogin)
       if(!login){
         return res.stus(404).send({mensagem: 'Login não encontrado'});
       }
@@ -106,7 +107,7 @@ class LoginController{
       const senhaHash = await criptografaSenha(senha);
 
       //Atualizando login
-      const [resultado] = await database.Login.update({email, senha: senhaHash} ,{ where: {id: idLogin}});
+      const [resultado] = await loginServices.atualizarRegistro(idLogin, {email, senha: senhaHash});
 
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
