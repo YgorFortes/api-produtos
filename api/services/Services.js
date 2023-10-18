@@ -12,6 +12,10 @@ class Services {
   async listarRegistroPorId(id){
     return  database[this.nomeModelo].findOne({where: {id: Number(id)}});
   }
+
+  async listaRegistroPorParametro(parametro, valorPametro){
+    return  database[this.nomeModelo].findOne({where: {[parametro]: valorPametro}});
+  }
   
   async listarRegistroPorFiltro(parametros){
     return database[this.nomeModelo].findAll({...parametros});
@@ -29,8 +33,9 @@ class Services {
         defaults: {...informacao}
       }
     );
-    
   }
+
+  
 
   async atualizarRegistro(id, novaInformacao, transacao = {}){
     return database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});

@@ -9,8 +9,6 @@ function verificaToken(req, res, next){
   }
 
   try {
-
-    
     const secret = process.env.SECRET;
     jwt.verify(token, secret);
 

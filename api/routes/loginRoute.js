@@ -7,7 +7,7 @@ const router = Router();
 router
 .post('/login/registrar' , LoginController.criarLogin)
 .post('/login', LoginController.login)
-.put('/login', verificaToken, LoginController.atualizarLogin)
+.put('/login', verificaToken,  LoginController.atualizarLogin)
 
 
 module.exports = router;

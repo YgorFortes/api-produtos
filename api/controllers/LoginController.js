@@ -1,7 +1,6 @@
-const database = require('../models/index.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {LoginServices} = require('../services/index.js');
+const {LoginServices, PessoasServices} = require('../services/index.js');
 const loginServices = new LoginServices;
 const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
 require('dotenv').config();
@@ -19,6 +18,9 @@ class LoginController{
         return res.status(400).send({mensagem: erroCampos})
       }
 
+      //Formatando a entrada de email em minusculo
+      const emailFormatado = formatarEmailMinuscula(email);
+
       //Verificando se senhas correspondm
       if(senha !== confirmarSenha){
         return res.status(409).send({mensagem: 'Senhas não conferem'});
@@ -30,18 +32,18 @@ class LoginController{
       }
 
       //Verificando email já estar cadastrado
-      const emailEncontrado = await database.Login.findOne({where: {email: email}});
+      const emailEncontrado = await loginServices.listarRegistroPorEmail(emailFormatado);
       if(emailEncontrado){
-        return res.status(409).send({mensagem: 'Email já cadastrado'});
+        return res.status(409).send({mensagem: 'Email já cadastrado. Por favor digite outro.'})
       }
 
       //Criptogrfando a senha
       const senhaHash = await criptografaSenha(senha);
-      const novoLogin = await loginServices.criarRegistro({email: email, senha: senhaHash});
+      const novoLogin = await loginServices.criarRegistro({email: emailFormatado, senha: senhaHash});
 
 
-     const novoLoginSemSenha = esconderSenha (novoLogin)
-      
+      const novoLoginSemSenha = esconderSenha (novoLogin)
+
       return res.status(201).send(novoLoginSemSenha)
 
     } catch (erro) {
@@ -52,6 +54,7 @@ class LoginController{
 
   static async login(req, res, next){
     const {email, senha} = req.body;
+   
     try {
 
       //Verificando os campos vazios
@@ -60,9 +63,13 @@ class LoginController{
         return res.status(400).send({mensagem: erroCampos})
       }
 
-      //Busca no banco o email digitado
-      const login = await loginServices.listarRegistroPorEmail(email);
+      //Formatando a entrada de email em minusculo
+      const emailFormatado = formatarEmailMinuscula(email);
 
+      //Busca no banco o email digitado
+      const login = await loginServices.listaPessoaPeloLoginPorEmail(emailFormatado);
+
+      
       //Verifica se existe usuario pelo email digitado 
       if(!login){
         return res.status(409).send({mensagem: 'Email não cadastrado'});
@@ -99,6 +106,9 @@ class LoginController{
         return res.status(400).send({mensagem: erroCampos})
       }
 
+      //Formatando a entrada de email em minusculo
+      const emailFormatado = formatarEmailMinuscula(email);
+
       //Verifica se a senha confere com a regex
       if(!verificaCriterioSenha(senha)){
         return res.status(422).send({mensagem: 'A senha precisa ter pelo menos uma letra maiúsculas , minúsculas, um número e um carácter especial'});
@@ -113,11 +123,17 @@ class LoginController{
         return res.stus(404).send({mensagem: 'Login não encontrado'});
       }
 
+      const emailEncontrado = await loginServices.listarRegistroPorEmail(email);
+      if(emailEncontrado){
+        return res.status(409).send({mensagem: 'Email já cadastrado. Por favor digite outro.'})
+      }
+
+
       //Criptografando senha
       const senhaHash = await criptografaSenha(senha);
 
       //Atualizando login
-      const [resultado] = await loginServices.atualizarRegistro(idLogin, {email, senha: senhaHash});
+      const [resultado] = await loginServices.atualizarRegistro(idLogin, {email: emailFormatado , senha: senhaHash});
 
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
@@ -153,6 +169,11 @@ function esconderSenha (tabela){
 function verificaCriterioSenha(senha){
   const regex = /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])[A-Za-z\d@#$%&*_-]/
   return regex.test(senha);
+}
+
+function formatarEmailMinuscula(email){
+  const emailFormatado= email.toLowerCase().trim();
+  return emailFormatado;
 }
 
 
