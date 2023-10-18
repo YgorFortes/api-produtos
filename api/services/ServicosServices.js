@@ -27,6 +27,16 @@ class ServicosServices extends Services{
     );
   }
 
+  async listarRegistroDaPessoaLogada(idLogin){
+    return  database.Servicos.findAll({
+      include: [{
+        model: database.Pessoas,
+        where: { login_id: idLogin},
+        attributes:  ['id','nome', 'cpf','funcao'],
+      }]
+    });
+  }
+
   async listarRegistroPorFiltro(parametros){
     const {tipo, dataEntrega, pessoaId, nomePessoa} = parametros;
     let  where = {};

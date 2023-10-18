@@ -1,7 +1,8 @@
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 const {ServicosServices} =  require("../services/index.js");
 const servicosServices = new ServicosServices;
-
+const database = require('../models/index.js');
+const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
 class ServicosController {
   static async listarServicos(__,res, next){
     try {
@@ -104,6 +105,25 @@ class ServicosController {
     } catch (erro) {
       next(erro);
     }
+
+  }
+
+  static async listarServicoDaPessoaLogado(req, res){
+    try {
+      //Resgatando id de login pelo token
+      const idLogin = await resgatarIdLogin(req);
+
+      const servicosPessoaLogada = await servicosServices.listarRegistroDaPessoaLogada(idLogin);
+
+      //Verifica se existe serviço pela pessoa logada
+      if(servicosPessoaLogada.length <1 ){
+        return res.status(404).send({mensagem: 'Nenhum serviço associado a esta pessoa.'})
+      }
+      return res.status(200).send(servicosPessoaLogada) ;
+    } catch (erro) {
+      
+    }
+   
 
   }
 

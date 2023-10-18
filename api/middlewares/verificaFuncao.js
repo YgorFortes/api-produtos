@@ -1,7 +1,7 @@
 const database = require('../models/index.js');
 const {resgatarIdLogin} = require('../helpers/helpers.js')
 require('dotenv').config();
-async function verificaPapel(req, res, next){
+async function verificaFuncao(req, res, next){
   try {
     const idLogin = await await resgatarIdLogin(req);
 
@@ -20,4 +20,4 @@ async function verificaPapel(req, res, next){
  
 }
 
-module.exports = verificaPapel
+module.exports = verificaFuncao

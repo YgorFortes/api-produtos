@@ -5,6 +5,9 @@ class PessoasServices extends Services{
   constructor(){
     super('Pessoas');
   }
+  async listarRegistroPorId(id){
+    return  database[this.nomeModelo].scope('todas').findOne({where: {id: Number(id)}});
+  }
 
   async listarTodos(){
     return database[this.nomeModelo].scope('todas').findAll();
@@ -21,6 +24,10 @@ class PessoasServices extends Services{
     if (cpf)  where.cpf  =  formataCpf(cpf);
     return database[this.nomeModelo].findAll({where});
       
+  }
+
+  async atualizarRegistro(id, novaInformacao, transacao = {}){
+    return database[this.nomeModelo].scope('todas').update(novaInformacao, {where: {id: Number(id)}});
   }
 
   async detalharPessoa(idLogin){

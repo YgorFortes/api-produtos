@@ -1,20 +1,20 @@
 const Router = require ("express");
 const PessoaController = require('../controllers/PessoasController.js');
 const verificaToken = require('../middlewares/verificaToken.js');
-const verificaPapel = require('../middlewares/verificaPapel.js');
+const verificaFuncao = require('../middlewares/verificaFuncao.js');
 const router = Router();
 
 router
-.get('/pessoas/filtro',verificaToken, verificaPapel, PessoaController.listarPessoaPorFiltro)
-.get('/pessoas/todos',verificaToken, verificaPapel, PessoaController.listarTodasPessoas)
-.get('/pessoas/desativados', verificaPapel, PessoaController.listarPessoasDesativadas)
-.get('/pessoas/',verificaToken,verificaPapel, PessoaController.listarPessoasAtivas)
+.get('/pessoas/filtro',verificaToken, verificaFuncao, PessoaController.listarPessoaPorFiltro)
+.get('/pessoas/todos',verificaToken, verificaFuncao, PessoaController.listarTodasPessoas)
+.get('/pessoas/desativados', verificaFuncao, PessoaController.listarPessoasDesativadas)
+.get('/pessoas/',verificaToken,verificaFuncao, PessoaController.listarPessoasAtivas)
 .get('/pessoas/detalhar',verificaToken,  PessoaController.detalharPessoa)
-.get('/pessoas/:id',verificaToken, verificaPapel, PessoaController.listarPessoaPorId)
+.get('/pessoas/:id',verificaToken, verificaFuncao, PessoaController.listarPessoaPorId)
 .post('/pessoas/',verificaToken,  PessoaController.criarPessoa)
-.post('/pessoas/:id/restaurar',  verificaToken, verificaPapel, PessoaController.restaurarPessoa)
+.post('/pessoas/:id/restaurar',  verificaToken, verificaFuncao, PessoaController.restaurarPessoa)
 .put('/pessoas/atualizar', verificaToken, PessoaController.atualizarPessoaLogada)
 .put('/pessoas/:id', verificaToken,PessoaController.atualizarPessoa)
-.delete("/pessoas/:id", verificaToken, verificaPapel, PessoaController.deletarPessoa)
+.delete("/pessoas/:id", verificaToken, verificaFuncao, PessoaController.deletarPessoa)
 
 module.exports = router;

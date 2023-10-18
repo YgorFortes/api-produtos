@@ -3,21 +3,18 @@ const { Sequelize, BaseError } = require("sequelize");
 
 function manipuladorErros(erro, req, res, next){
 
-  try {
-    
-  } catch (erro) {
-    const mensagemErro = erro.errors[0].message;
+
+    const mensagemErro = erro.errors[0].message || null;
   if(erro instanceof Sequelize.Error){
     res.status(400).send({mensagem: mensagemErro})
   } else if(erro instanceof Sequelize.ValidationError){
      res.status(400).send({mensagem: "Erro de validação"})
   } else if(erro instanceof Sequelize.BaseError){
     res.status(500).send({mensagem: "Erro interno do servidor"})
-  }
-  next();
+  }else{
+    next(erro);
   }
   
-
 }
 
 module.exports = manipuladorErros;
