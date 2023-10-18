@@ -84,6 +84,11 @@ class PessoaController {
     const {id} = req.params;
     try{
 
+      //Verifica se id é um número
+      if(isNaN(id)){
+        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      }
+
       //Busca pessoa pelo id na url
       const resultadoPessoaId = await pessoasServices.listarRegistroPorId(id);
     
@@ -165,7 +170,7 @@ class PessoaController {
   static async atualizarPessoa(req, res, next) {
     const {id} = req.params;
     const novasInfosPessoa = req.body;
-    console.log(novasInfosPessoa)
+ 
     try{
 
       //Busca pessoa com id da url 

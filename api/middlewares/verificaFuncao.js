@@ -8,7 +8,7 @@ async function verificaFuncao(req, res, next){
     const pessoa = await database.Pessoas.findOne({where:{ login_id:  idLogin}});
     
     const papel = pessoa.funcao.toLowerCase();
-   
+
     if((papel!== 'gerente')){
       return res.status(409).send({mensagem:'Acesso negado'});
     }
