@@ -1,7 +1,8 @@
 const database = require('../models/index.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {verificaCamposVazios} = require('../helpers/helpers.js');
+const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
+const { where } = require('sequelize');
 require('dotenv').config();
 
 class LoginController{
@@ -29,8 +30,7 @@ class LoginController{
       }
 
       //Criptogrfando a senha
-      const salt = await bcrypt.genSalt(12);
-      const senhaHash = await bcrypt.hash(senha, salt);
+      const senhaHash = await criptografaSenha(senha);
       const novoLogin = await database.Login.create({email: email, senha: senhaHash});
 
 
@@ -82,9 +82,52 @@ class LoginController{
       next(erro);
     }
   }
+
+  static async atualizarLogin(req, res, next){
+    const {email, senha} =  req.body;
+    try {
+
+      //Verificando campos 
+      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha');      
+      if(erroCampos){
+        return res.status(400).send({mensagem: erroCampos})
+      }
+
+      //resgatando idLogin
+      const idLogin = await  resgatarIdLogin(req);
+
+      //Buscando login e verificando se existe 
+      const login = await database.Login.findOne({where: {id: idLogin}});
+      if(!login){
+        return res.stus(404).send({mensagem: 'Login não encontrado'});
+      }
+
+      //Criptografando senha
+      const senhaHash = await criptografaSenha(senha);
+
+      //Atualizando login
+      const [resultado] = await database.Login.update({email, senha: senhaHash} ,{ where: {id: idLogin}});
+
+      //Verifica se pessoa foi cadastrada com sucesso
+      if(!resultado){
+        return res.status(409).json({mensagem: 'login não atualizado'});
+      }
+
+      return res.status(200).send({mensagem: 'Login atualizado'});
+    } catch (erro) {
+      console.log(erro)
+       next(erro);
+    }
+  }
 }
 
 
+async function criptografaSenha(senha){
+  //Criptogrfando a senha
+  const salt = await bcrypt.genSalt(12);
+  const senhaHash = await bcrypt.hash(senha, salt);
+  return senhaHash
+}
 
 
 function esconderSenha (tabela){
