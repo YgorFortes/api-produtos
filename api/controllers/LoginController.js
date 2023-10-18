@@ -99,6 +99,11 @@ class LoginController{
         return res.status(400).send({mensagem: erroCampos})
       }
 
+      //Verifica se a senha confere com a regex
+      if(!verificaCriterioSenha(senha)){
+        return res.status(422).send({mensagem: 'A senha precisa ter pelo menos uma letra maiúsculas , minúsculas, um número e um carácter especial'});
+      }
+
       //resgatando idLogin
       const idLogin = await  resgatarIdLogin(req);
 

@@ -3,8 +3,10 @@ const pessoasServices = new PessoasServices;
 const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
 const formataCpf = require('../funcoesEspecificas/formatarCpf.js');
 
+
+
 class PessoaController {
-  static async listarTodasPessoas(__, res){
+  static async listarTodasPessoas(__, res, next){
     try{
       //Busca todas as pessoas
       const resultadoListaPessoas = await pessoasServices.listarTodos();
@@ -22,7 +24,7 @@ class PessoaController {
     }
   }
 
-  static async listarPessoasAtivas(__, res){
+  static async listarPessoasAtivas(__, res, next){
     try{
       
       //Busca todas as pessoas ativas
@@ -41,7 +43,7 @@ class PessoaController {
     }
   }
 
-  static async listarPessoasDesativadas(__, res ){
+  static async listarPessoasDesativadas(__, res , next){
     try{
       
       //Busca todas as pessoas desativadas
@@ -60,7 +62,7 @@ class PessoaController {
     }
   }
 
-  static async listarPessoaPorFiltro(req, res){
+  static async listarPessoaPorFiltro(req, res, next){
     try{
 
       //Busca pessoas pelo filtro, conforme a tabela no banco ex = data_nascimento = 2007-07-07
@@ -78,7 +80,7 @@ class PessoaController {
     }
   }
 
-  static async listarPessoaPorId (req, res){
+  static async listarPessoaPorId (req, res, next){
     const {id} = req.params;
     try{
 
@@ -120,7 +122,7 @@ class PessoaController {
     }
   }
 
-  static async criarPessoa (req, res) {
+  static async criarPessoa (req, res, next) {
     const {nome, data_nascimento, cpf, endereco, funcao, ativo} = req.body;
 
     //Formata cpf
@@ -160,15 +162,15 @@ class PessoaController {
     }
   }
 
-  static async atualizarPessoa(req, res) {
+  static async atualizarPessoa(req, res, next) {
     const {id} = req.params;
     const novasInfosPessoa = req.body;
-
+    console.log(novasInfosPessoa)
     try{
 
       //Busca pessoa com id da url 
-      const pessoa = await pessoasServices.listarRegistroPorId(id);
-
+      const pessoa = await pessoasServices.listarRegistroPorId(id)
+    
       //Verifica se pessoa com id existe
       if(!pessoa){
         return res.status(404).send({mensagem: 'Pessoa não encontrada'});
@@ -181,7 +183,8 @@ class PessoaController {
 
       //Atualiza pessoa conforme id e tabela no banco ex data_nascimento = 2007-07-07
       const [resultado] = await pessoasServices.atualizarRegistro(id, novasInfosPessoa);
-
+      
+  
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
         return res.status(409).json({mensagem: 'Pessoa não atualizada'});
@@ -203,7 +206,7 @@ class PessoaController {
     }
   }
 
-  static async deletarPessoa(req, res) {
+  static async deletarPessoa(req, res, next) {
     const {id} = req.params;
 
     try{
@@ -242,7 +245,7 @@ class PessoaController {
     }
   }
 
-  static async restaurarPessoa(req, res){
+  static async restaurarPessoa(req, res, next){
     const {id} = req.params;
     try {
       
