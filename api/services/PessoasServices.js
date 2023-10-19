@@ -22,6 +22,13 @@ class PessoasServices extends Services{
     const where = {};
     if (nome)   where.nome  = nome;
     if (cpf)  where.cpf  =  formataCpf(cpf);
+
+
+    const verificaWhereVazio = Object.keys(where).length;
+    if(verificaWhereVazio <1){
+      return  [];
+    }
+
     return database[this.nomeModelo].findAll({where});
       
   }

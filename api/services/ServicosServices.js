@@ -53,6 +53,11 @@ class ServicosServices extends Services{
       return database[this.nomeModelo].findAll({where, include});
     }
 
+    const verificaWhereVazio = Object.keys(where).length;
+    if(verificaWhereVazio <1){
+      return  [];
+    }
+
     return database[this.nomeModelo].findAll({where});
       
   }

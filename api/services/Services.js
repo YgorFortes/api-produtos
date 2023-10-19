@@ -14,7 +14,7 @@ class Services {
   }
 
   async listaRegistroPorParametro(parametro, valorPametro){
-    return  database[this.nomeModelo].findOne({where: {[parametro]: valorPametro}});
+    return await database.Pessoas.findOne({ where: { [parametro]: valorPametro} });
   }
   
   async listarRegistroPorFiltro(parametros){

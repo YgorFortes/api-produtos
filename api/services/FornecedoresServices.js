@@ -44,16 +44,21 @@ class FornecedoresServices extends Services{
   
     if (nomeProduto || marcaProduto || modeloProduto) {
         const include = associacaoInclude(
-          database.Produtos,
-          nomeProduto ? "nome" : marcaProduto ? "marca" : "modelo",
-          nomeProduto || marcaProduto || modeloProduto,
-          "FornecedorProduto",
-          "produtos"
-        );
+        database.Produtos,
+        nomeProduto ? "nome" : marcaProduto ? "marca" : "modelo",
+        nomeProduto || marcaProduto || modeloProduto,
+        "FornecedorProduto",
+        "produtos"
+      );
+
 
       return database[this.nomeModelo].findAll({ where, include });
     }
-    
+
+    const verificaWhereVazio = Object.keys(where).length;
+    if(verificaWhereVazio <1){
+      return  [];
+    }
   
     return database[this.nomeModelo].findAll({where});
   }

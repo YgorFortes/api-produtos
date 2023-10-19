@@ -10,9 +10,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       quantidade: {
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       valor: {
+        allowNull: false,
         type: Sequelize.FLOAT
       },
       venda_id: {

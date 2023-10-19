@@ -13,7 +13,7 @@ class PessoaController {
 
       //Verifica se existe pessoas cadastradas
       if(resultadoListaPessoas.length < 1){
-        return res.status(500).json({mensagem: "Pessoas não encontrado"});
+        return res.status(404).json({mensagem: "Pessoas não encontrado"});
       } 
 
 
@@ -32,7 +32,7 @@ class PessoaController {
 
       //Verifica se existe pessoas ativas cadastradas
       if(resultadoListaPessoas.length < 1){
-        return res.status(500).json({mensagem: "Pessoas ativas não encontradas"});
+        return res.status(404).json({mensagem: "Pessoas ativas não encontradas"});
       } 
 
 
@@ -51,7 +51,7 @@ class PessoaController {
       
       //Verifica se existe pessoas desativadas cadastradas
       if(resultadoListaPessoas.length < 1){
-        return res.status(500).json({mensagem: "Pessoas desativadas não encontradas"});
+        return res.status(404).json({mensagem: "Pessoas desativadas não encontradas"});
       } 
 
 
@@ -94,7 +94,7 @@ class PessoaController {
     
       //Verifica se existe pessoas cadastradas conforme o id
       if(!resultadoPessoaId ){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
 
 
@@ -116,7 +116,7 @@ class PessoaController {
       
       //Verifica se a pessoa existe conforme o id de login
       if(!resultadoPessoaId ){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
 
 
@@ -174,7 +174,7 @@ class PessoaController {
     try{
 
       //Busca pessoa com id da url 
-      const pessoa = await pessoasServices.listarRegistroPorId(id)
+      const pessoa = await pessoasServices.listarRegistroPorId(id);
     
       //Verifica se pessoa com id existe
       if(!pessoa){
@@ -189,7 +189,7 @@ class PessoaController {
       //Atualiza pessoa conforme id e tabela no banco ex data_nascimento = 2007-07-07
       const [resultado] = await pessoasServices.atualizarRegistro(id, novasInfosPessoa);
       
-  
+      
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
         return res.status(409).json({mensagem: 'Pessoa não atualizada'});
@@ -200,7 +200,7 @@ class PessoaController {
 
       //Verifica se pessoa existe 
       if(!pessoaAtualizada ){
-        return res.status(500).json({mensagem: "id não encontrado"});
+        return res.status(404).json({mensagem: "id não encontrado"});
       }
 
 
@@ -239,7 +239,7 @@ class PessoaController {
   
       //Verifica se pessoa foi deletada com sucesso
       if(!pessoaDeletada){
-        return res.status(500).json({mensagem: "Id não deletado"});
+        return res.status(409).json({mensagem: "Id não deletado"});
       }
 
 
@@ -259,7 +259,7 @@ class PessoaController {
 
       //Verifica se a pessoa foi restaurada
       if(!pessoaRestaurada){
-        return res.status(500).json({mensagem: "Id não restaurado"});
+        return res.status(409).json({mensagem: "Id não restaurado"});
       }
 
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
@@ -310,7 +310,7 @@ class PessoaController {
 
       //Verifica se pessoa existe 
       if(!pessoaAtualizada ){
-        return res.status(500).json({mensagem: "id não encontrado"});
+        return res.status(404).json({mensagem: "id não encontrado"});
       }
 
 
