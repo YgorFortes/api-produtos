@@ -15,6 +15,7 @@ class ServicosController {
 
       return res.status(200).json(resultadoListaServicos)
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
@@ -39,6 +40,7 @@ class ServicosController {
 
       return res.status(200).json(resultadoServicoPorId);
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
@@ -56,6 +58,7 @@ class ServicosController {
 
       res.status(200).json(resultadoPorFiltro)
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
@@ -74,7 +77,8 @@ class ServicosController {
       }
       return res.status(200).send(servicosPessoaLogada) ;
     } catch (erro) {
-      
+      console.log(erro);
+      next(erro);
     }
    
 
@@ -84,7 +88,9 @@ class ServicosController {
     const {tipo, data_entrega, preco} = req.body;
     try {
 
+      //Resgatando id de login pelo token
       const idLogin = await resgatarIdLogin(req);
+
       //Verificando os campos vazios
       const erroCampos = verificaCamposVazios(req.body, 'tipo', 'data_entrega', 'preco');
       if(erroCampos){
@@ -96,6 +102,7 @@ class ServicosController {
 
       return res.status(201).json(novoServico);
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
@@ -105,20 +112,20 @@ class ServicosController {
     const novaInforServico = req.body;
     try {
 
-      //Verifica se id é um número
+      //checa se id é um númerico
       if(isNaN(id)){
         return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
       }
       
-      //Buscando serviço pelo id
+      //Busca serviço pelo id
       const servico = await servicosServices.listarRegistroPorId(id);
 
-      //Veirificando se servico existe
+      //Veirifica se servico existe
       if(!servico ){
         return res.status(500).json({mensagem: "Id não encontrado"});
       }
 
-      //Impede de tentar atualizar pessoa_id
+      // Impede a atualização do campo pessoa_id
       if(novaInforServico.hasOwnProperty('pessoa_id')){
         return res.status(409).json({mensagem: 'Não pode atualizar pessoa_id'});
       }
@@ -126,22 +133,23 @@ class ServicosController {
       //Atualiza servico
       const resultado= await servicosServices.atualizarRegistro(id, novaInforServico);
  
-      //Verifica se servico foi cadastrada com sucesso
+      // Verifica se a atualização foi bem sucedida
       if(!resultado){
-        return res.status(409).json({mensagem: 'Pessoa não atualizada'});
+        return res.status(409).json({mensagem: 'Serviço não atualizado'});
       }
 
-      //Buscando novo serviço pelo id
+      //Busca serviço atualizado pelo id
       const novoServicoAtualizado = await servicosServices.listarRegistroPorId(id);
     
-      //Veirificando se novo servico existe
+      //Veirificando o serviço atualizado existe
       if(!novoServicoAtualizado ){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
       
       return res.status(200).json(novoServicoAtualizado);
     } catch (erro) {
-      next(erro);;
+      console.log(erro);
+      next(erro);
     }
   }
 
@@ -149,15 +157,15 @@ class ServicosController {
     const {id} = req.params;
     try {
 
-      //Verifica se id é um número
+      //checa se id é um númerico
       if(isNaN(id)){
         return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
       }
 
-      //Buscando serviço pelo id
+      //Busca serviço pelo id
       const servico = await servicosServices.listarRegistroPorId(id);
 
-      //Veirificando se servico existe
+      //Veirifica se o servico existe
       if(!servico ){
         return res.status(500).json({mensagem: "Id não encontrado"});
       }
@@ -165,7 +173,7 @@ class ServicosController {
       //Deleta o servico
       const servicoDeletado = await servicosServices.deletarRegistro(id)
       
-      //Verrifica se deletou
+      //Verrifica se foi bem sucedido
       if(!servicoDeletado ){
         return res.status(500).json({mensagem: "Id não deletado"});
       }
@@ -173,6 +181,7 @@ class ServicosController {
 
       return res.status(200).json({mensagem: `Id: ${id} Deletado com sucesso`});
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
@@ -181,25 +190,86 @@ class ServicosController {
     const {id} = req.params;
     try {
 
-      //Verifica se id é um número
+      //checa se id é um númericoo
       if(isNaN(id)){
         return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
       }
 
-      //Restaura o serviço
+      //Restaura o serviço pelo id
       const servicoRestaurado = await servicosServices.restaurarRegistro(id)
 
-      //Verifica se restaurou serviço
+      //Verifica se a restauração foi bem sucedida
       if(!servicoRestaurado ){
         return res.status(500).json({mensagem: "Id não restaurado"});
       }
     
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
+      console.log(erro);
       next(erro);
     }
   }
 
+  static async atualizaServicosPessoaLogado(req, res){
+    const {id} = req.params;
+    const novaInforServico = req.body;
+
+    try {
+
+      //checa se id é um númericoo
+      if(isNaN(id)){
+        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      }
+
+      //Resgata id da tabela login 
+      const idLogin = await resgatarIdLogin(req);
+
+      //Resgata o idServico se o id params estiver associado a pessoa logada
+      const idServico = await verificaServicoAssociado(idLogin, id ,res);
+      
+      if(!idServico){
+       return res.status(404).send({mensagem: `O id ${id} não estar associado a essa conta`});
+      }
+
+      //atualiza servico
+      const [resultado] = await servicosServices.atualizarRegistro(idServico, novaInforServico);
+
+      //Verifica se a atualização foi bem sucedida
+      if(!resultado){
+        return res.status(409).json({mensagem: 'Serviço não atualizado'});
+      }
+
+      //Busca serviço atualizado pelo id
+      const novoServicoAtualizado = await servicosServices.listarRegistroPorId(idServico);
+    
+      //Veirificando o serviço atualizado existe
+      if(!novoServicoAtualizado ){
+        return res.status(404).json({mensagem: "Id não encontrado"});
+      }
+
+
+      return res.status(200).json(novoServicoAtualizado);
+    } catch (erro) {
+      console.log(erro);
+      next(erro);
+    }
+
+  }
+
+}
+
+async function verificaServicoAssociado(idLogin, id, res){
+  const servicosPessoaLogada = await servicosServices.listarRegistroDaPessoaLogada(idLogin) ;
+
+  if(servicosPessoaLogada.length <1 ){
+    return res.status(404).send({mensagem: 'Nenhum serviço associada a essa conta '});
+  }
+
+  for (let servicoPessoaLogada of servicosPessoaLogada){
+    if(servicoPessoaLogada.id === Number(id)){
+      return servicoPessoaLogada.id ;
+    }
+  }
 
 }
 
