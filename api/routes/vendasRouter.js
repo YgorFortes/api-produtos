@@ -8,7 +8,9 @@ router
 
 .get('/vendas/filtro',verificaToken, verificaFuncao, VendasController.listarVendaPorFiltro)
 .get('/vendas',verificaToken, verificaFuncao, VendasController.listarVendas)
+.get('/vendas/logado', verificaToken, VendasController.listarVendasPessoaLogado)
 .get('/vendas/:id',verificaToken, verificaFuncao, VendasController.listarVendaPorId)
+
 .post('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
 .post('/vendas/produto',verificaToken, VendasController.criarVenda)
 .put('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)
