@@ -67,8 +67,7 @@ class LoginController{
       const emailFormatado = formatarEmailMinuscula(email);
 
       //Busca no banco o email digitado
-      const login = await loginServices.listaPessoaPeloLoginPorEmail(emailFormatado);
-
+      const login = await loginServices.listarRegistroPorEmail(emailFormatado);
       
       //Verifica se existe usuario pelo email digitado 
       if(!login){
