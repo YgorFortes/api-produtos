@@ -98,14 +98,14 @@ class VendasServices extends Services{
       //Pega a id de produto
       const produtoId = produto.id;
 
-      //Coloca valores necesários em where para criar o itemVenda
-      where = {quantidade: quantidadeVendido, valor : Number(valorTotal.toFixed(2)), venda_id: idVendaCriada, produto_id:  produtoId};
-
       //Calcula a quantidade atual do produto comprado
       const quantidadeAtual = (quantidadeProduto - quantidadeProdutoComprado);
 
       //Atualiza a quantidade atual em produto
       const resultado =  await this.produtos.atualizarRegistro(idProduto, {quantidade: quantidadeAtual},  {transaction: transacao});
+
+      //Coloca valores necesários em where para criar o itemVenda
+      where = {quantidade: quantidadeVendido, valor : Number(valorTotal.toFixed(2)), venda_id: idVendaCriada, produto_id:  produtoId};
 
       //Cria um registro em itemVenda com os valore do objeto where
       const novoItemVendaCriado = await this.itemVenda.criarRegistro(where, {transaction: transacao});
@@ -118,6 +118,16 @@ class VendasServices extends Services{
       return novoItemVendaCriado; 
     });
    
+  }
+
+  async listarVendasLogado(idLogin){
+    return  database.Vendas.findAll({
+      include: [{
+        model: database.Pessoas,
+        where: { login_id: idLogin},
+        attributes:  ['id','nome', 'cpf','funcao'],
+      }]
+    });
   }
 
 }

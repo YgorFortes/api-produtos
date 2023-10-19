@@ -44,6 +44,26 @@ class VendasController{
     }
   }
 
+  static async  listarVendasPessoaLogado(req, res){
+    try {
+      //Resgata o id de login
+      const idLogin = await resgatarIdLogin(req);
+
+      //Busca vendas da pessoa logada 
+      const vendasPessoaLogada = await vendasServices.listarVendasLogado(idLogin);
+
+      //Verifica se vendas existe
+      if(vendasPessoaLogada.length <1){
+        return res.status(404).send({mensagem: 'Nenhuma venda associado a esta pessoa.'});
+      }
+
+      
+      return res.status(200).send(vendasPessoaLogada)
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
   static async listarVendaPorFiltro(req, res, next){
     try{
       
@@ -62,7 +82,6 @@ class VendasController{
 
   static async criarVenda(req, res, next) {
     const {data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado} = req.body;
-
 
     try {
 
