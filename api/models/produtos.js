@@ -51,10 +51,6 @@ module.exports = (sequelize, DataTypes) => {
           args: true,
           msg: 'Válido somente números inteiros',
         },
-        min: {
-          args: 1,
-          msg: "O produto precisa ter pelo menos 1 na quantidade cadastrado"
-        }
       }
     }
   }, {

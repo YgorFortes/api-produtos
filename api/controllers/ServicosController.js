@@ -10,7 +10,7 @@ class ServicosController {
 
       //Verifica se serviços estão vazios
       if(resultadoListaServicos.length <1 ){
-        return res.status(500).json({mensagem: "Serviços não encontrado"});
+        return res.status(404).json({mensagem: "Serviços não encontrado"});
       }
 
       return res.status(200).json(resultadoListaServicos)
@@ -35,7 +35,7 @@ class ServicosController {
 
       //Verifica se serviço existe
       if(!resultadoServicoPorId){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
 
       return res.status(200).json(resultadoServicoPorId);
@@ -53,7 +53,7 @@ class ServicosController {
       
       //Verifica se o serviço existe
       if(resultadoPorFiltro.length <1 ){
-        return res.status(500).json({mensagem: "Resultado não encontrado"});
+        return res.status(404).json({mensagem: "Resultado não encontrado"});
       }
 
       res.status(200).json(resultadoPorFiltro)
@@ -94,7 +94,7 @@ class ServicosController {
       //Verificando os campos vazios
       const erroCampos = verificaCamposVazios(req.body, 'tipo', 'data_entrega', 'preco');
       if(erroCampos){
-        return res.status(400).send({mensagem: erroCampos})
+        return res.status(400).send({mensagem: erroCampos});
       }
 
       //Cria um serviço conforme o pessoa de idLogin
@@ -122,7 +122,7 @@ class ServicosController {
 
       //Veirifica se servico existe
       if(!servico ){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
 
       // Impede a atualização do campo pessoa_id
@@ -167,7 +167,7 @@ class ServicosController {
 
       //Veirifica se o servico existe
       if(!servico ){
-        return res.status(500).json({mensagem: "Id não encontrado"});
+        return res.status(404).json({mensagem: "Id não encontrado"});
       }
 
       //Deleta o servico
@@ -175,7 +175,7 @@ class ServicosController {
       
       //Verrifica se foi bem sucedido
       if(!servicoDeletado ){
-        return res.status(500).json({mensagem: "Id não deletado"});
+        return res.status(409).json({mensagem: "Id não deletado"});
       }
     
 
@@ -200,7 +200,7 @@ class ServicosController {
 
       //Verifica se a restauração foi bem sucedida
       if(!servicoRestaurado ){
-        return res.status(500).json({mensagem: "Id não restaurado"});
+        return res.status(409).json({mensagem: "Id não restaurado"});
       }
     
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});

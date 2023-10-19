@@ -45,42 +45,47 @@ class ProdutosServices extends Services{
 
     if (fornecedorId || nomeFornecedor) {
       const include = associacaoInclude(
-          database.Fornecedores,
-          fornecedorId ? "id" : "nome",
-          fornecedorId || nomeFornecedor,
-          "FornecedorProduto",
-          "fornecedores"
+        database.Fornecedores,
+        fornecedorId ? "id" : "nome",
+        fornecedorId || nomeFornecedor,
+        "FornecedorProduto",
+        "fornecedores"
       );
+
       return database[this.nomeModelo].findAll({where, include});
     }
 
+    const verificaWhereVazio = Object.keys(where).length;
+    if(verificaWhereVazio <1){
+      return  [];
+    }
 
     return database[this.nomeModelo].findAll({where} );
   }
 
-  async atualizarRegistro(id, fornecedores, novaInformacao){
+  // async atualizarRegistro(id, fornecedores, novaInformacao){
 
-    await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
-    const produto = await database[this.nomeModelo].findByPk(id);
+  //   await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
+  //   const produto = await database[this.nomeModelo].findByPk(id);
    
-   if(fornecedores){
-      await produto.setFornecedores(fornecedores);
-    }else {
-      await produto.getFornecedores(fornecedores);
-    }
+  //  if(fornecedores){
+  //     await produto.setFornecedores(fornecedores);
+  //   }else {
+  //     await produto.getFornecedores(fornecedores);
+  //   }
     
-    return database[this.nomeModelo].findOne( 
-      {
-        where: {id: Number(id)},
-        include: {
-          model: database.Fornecedores,
-          as: "fornecedores",
-          attributes:  ['nome','endereco','telefone','cnpj'],
-        }
-     }
-    );
+  //   return database[this.nomeModelo].findOne( 
+  //     {
+  //       where: {id: Number(id)},
+  //       include: {
+  //         model: database.Fornecedores,
+  //         as: "fornecedores",
+  //         attributes:  ['nome','endereco','telefone','cnpj'],
+  //       }
+  //    }
+  //   );
      
-  }
+  // }
 
   async desativarProdutoSemEstoque(id){
    return database[this.nomeModelo].destroy({where: {id: Number(id), quantidade: {[Op.lte]: 0 }}});
