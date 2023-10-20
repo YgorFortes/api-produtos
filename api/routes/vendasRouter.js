@@ -10,7 +10,7 @@ router
 .get('/vendas',verificaToken, verificaFuncao, VendasController.listarVendas)
 .get('/vendas/logado', verificaToken, VendasController.listarVendasPessoaLogado)
 .get('/vendas/:id',verificaToken, verificaFuncao, VendasController.listarVendaPorId)
-
+.get('/vendas/recibo/:id', verificaToken, VendasController.gerarReciboCompra)
 .post('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
 .post('/vendas/:idVenda',verificaToken, VendasController.criarVenda)
 .put('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)

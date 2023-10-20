@@ -25,7 +25,7 @@ class VendasController{
     const {id} = req.params;
     try {
 
-      //checa se id é um númerico
+      //Checa se id é um númerico
       if(isNaN(id)){
         return res.status(400).send({mensagem: 'Id inválido. Digite um número.'});
       }
@@ -152,7 +152,7 @@ class VendasController{
 
       //Verificando se foi deletado
       if(!vendaDeletada){
-        return res.status(500).json({mensagem: "Id não deletado"});
+        return res.status(409).json({mensagem: "Id não deletado"});
       }
 
       return res.status(200).json({mensage: `Id: ${id} deletado`}) ;
@@ -170,7 +170,7 @@ class VendasController{
 
       //Verifica se foi restaurado com sucesso
       if(!vendaRestaurada){
-        return res.status(500).json({mensagem: "Id não restaurado"});
+        return res.status(409).json({mensagem: "Id não restaurado"});
       }
     
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
@@ -178,6 +178,31 @@ class VendasController{
       next(erro);
     }
 
+  }
+
+  static async gerarReciboCompra(req, res, next){
+    const {id} = req.params;
+    try {
+      //Resgata id de pessoa logada
+      const idLogin = await resgatarIdLogin(req);
+
+      // Checa se id é um númerico
+      if(isNaN(id)){
+        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'});
+      }
+
+      //Busca o recibo da venda do funcionario logado
+      const recibo = await vendasServices.gerarRebico(id, idLogin);
+      
+      //Verifica se o recibo existe
+      if(!recibo){
+        return res.status(404).send({mensagem: 'Venda não encontrada ou não associada ao funcionario'});
+      }
+
+      return res.status(200).send(recibo)
+    } catch (erro) {
+      next(erro);
+    }
   }
 }
 
