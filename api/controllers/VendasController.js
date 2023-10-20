@@ -82,6 +82,7 @@ class VendasController{
 
   static async criarVenda(req, res, next) {
     const {data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado} = req.body;
+    const {idVenda} = req.params;
 
     try {
 
@@ -95,7 +96,7 @@ class VendasController{
       }
 
       //Registra a compra 
-      const novoItemVendaCriado = await vendasServices.criarRegistro(data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado, idLogin); 
+      const novoItemVendaCriado = await vendasServices.criarRegistro(data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado, idLogin ,idVenda); 
       
       //Verifica se a compra foi realizada com sucesso
       if(!novoItemVendaCriado){

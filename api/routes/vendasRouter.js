@@ -12,7 +12,7 @@ router
 .get('/vendas/:id',verificaToken, verificaFuncao, VendasController.listarVendaPorId)
 
 .post('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
-.post('/vendas/produto',verificaToken, VendasController.criarVenda)
+.post('/vendas/:idVenda',verificaToken, VendasController.criarVenda)
 .put('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)
 .delete('/vendas/:id',verificaToken, verificaFuncao, VendasController.deletarVenda)
 
