@@ -61,19 +61,19 @@ class VendasServices extends Services{
     
   }
 
-  async criarRegistro(data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado, idLogin){
+  async criarRegistro(data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado, idLogin, idVenda){
     let quantidadeVendido = 0;
     let where = {};
     console.log(idLogin)
     return database.sequelize.transaction(async transacao => {
 
-      //Buscando o id de pessoa pelo id de login
-      const pessoa = await  database.Pessoas.findOne({where: {login_id: idLogin}});
+      // //Buscando o id de pessoa pelo id de login
+      // const pessoa = await  database.Pessoas.findOne({where: {login_id: idLogin}});
 
-      const pessoaId = pessoa.id;
+      // const pessoaId = pessoa.id;
  
-      //Cria uma nova venda de associada a pessoa logada
-      const novaVendaCriada = await database[this.nomeModelo].create({data_pagamento,data_entrega, data_venda,  pessoa_id: pessoaId} ,{transaction: transacao});
+      // //Cria uma nova venda de associada a pessoa logada
+      // const novaVendaCriada = await database[this.nomeModelo].create({data_pagamento,data_entrega, data_venda,  pessoa_id: pessoaId} ,{transaction: transacao});
 
       //Busca o produto de acordo com a id de produto
       const produto = await this.produtos.listarRegistroPorId(idProduto, {transaction: transacao});
@@ -92,8 +92,8 @@ class VendasServices extends Services{
       //Faz a soma total do item comprado 
       const valorTotal = (Number(quantidadeVendido) * produto.valor);
 
-      //Pega o id de venda criada
-      const idVendaCriada = novaVendaCriada.id;
+      // //Pega o id de venda criada
+      // const idVendaCriada = novaVendaCriada.id;
 
       //Pega a id de produto
       const produtoId = produto.id;
@@ -105,7 +105,7 @@ class VendasServices extends Services{
       const resultado =  await this.produtos.atualizarRegistro(idProduto, {quantidade: quantidadeAtual},  {transaction: transacao});
 
       //Coloca valores necesários em where para criar o itemVenda
-      where = {quantidade: quantidadeVendido, valor : Number(valorTotal.toFixed(2)), venda_id: idVendaCriada, produto_id:  produtoId};
+      where = {quantidade: quantidadeVendido, valor : Number(valorTotal.toFixed(2)), venda_id: Number(idVenda), produto_id:  produtoId};
 
       //Cria um registro em itemVenda com os valore do objeto where
       const novoItemVendaCriado = await this.itemVenda.criarRegistro(where, {transaction: transacao});
