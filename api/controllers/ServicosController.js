@@ -92,13 +92,21 @@ class ServicosController {
       const idLogin = await resgatarIdLogin(req);
 
       //Verificando os campos vazios
-      const erroCampos = verificaCamposVazios(req.body, 'tipo', 'data_entrega', 'preco');
+      const campos = ['tipo', 'data_entrega', 'preco'];
+      const erroCampos = verificaCamposVazios(req.body, campos);
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos});
       }
 
+      //Criando objeto para serviços
+      const servicos = {
+        tipo,
+        data_entrega, 
+        preco
+      }
+
       //Cria um serviço conforme o pessoa de idLogin
-      const novoServico = await servicosServices.criarRegistro(idLogin, {tipo, data_entrega, preco});
+      const novoServico = await servicosServices.criarRegistro(idLogin, servicos);
 
       return res.status(201).json(novoServico);
     } catch (erro) {
@@ -223,7 +231,8 @@ class ServicosController {
 
       //Resgata id da tabela login 
       const idLogin = await resgatarIdLogin(req);
-
+ 
+      
       //Resgata o idServico se o id params estiver associado a pessoa logada
       const idServico = await verificaServicoAssociado(idLogin, id ,res);
       

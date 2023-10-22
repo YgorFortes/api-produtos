@@ -11,8 +11,9 @@ router
 .get('/vendas/logado', verificaToken, VendasController.listarVendasPessoaLogado)
 .get('/vendas/:id',verificaToken, verificaFuncao, VendasController.listarVendaPorId)
 .get('/vendas/recibo/:id', verificaToken, VendasController.gerarReciboCompra)
+.post('/vendas/:idVenda',verificaToken, VendasController.criarItemVenda)
+.post('/vendas', verificaToken, VendasController.criarVenda)
 .post('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
-.post('/vendas/:idVenda',verificaToken, VendasController.criarVenda)
 .put('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)
 .delete('/vendas/:id',verificaToken, verificaFuncao, VendasController.deletarVenda)
 

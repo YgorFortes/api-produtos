@@ -1,6 +1,8 @@
+const { status } = require('init');
 const { verificaCamposVazios, resgatarIdLogin } = require('../helpers/helpers.js');
-const {VendasServices} = require('../services/index.js');
+const {VendasServices, IntemVendasServices} = require('../services/index.js');
 const vendasServices = new VendasServices;
+const itemVendasServices = new IntemVendasServices;
 
 
 class VendasController{
@@ -80,8 +82,8 @@ class VendasController{
     }
   }
 
-  static async criarVenda(req, res, next) {
-    const {data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado} = req.body;
+  static async criarItemVenda(req, res, next) {
+    const {idProduto, quantidadeProdutoComprado} = req.body;
     const {idVenda} = req.params;
 
     try {
@@ -90,13 +92,18 @@ class VendasController{
       const idLogin = await resgatarIdLogin(req);
 
       //Verifica campos em branco
-      const erroCampos = verificaCamposVazios(req.body,  'data_entrega','data_pagamento' ,'data_venda', 'idProduto', 'quantidadeProdutoComprado' );
+      const campos = ['data_entrega','data_pagamento' ,'data_venda', 'idProduto', 'quantidadeProdutoComprado'];
+      const erroCampos = verificaCamposVazios(req.body,  campos );
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos});
       }
 
+      const parametros ={
+        idProduto, quantidadeProdutoComprado, idLogin ,idVenda
+      }
+
       //Registra a compra 
-      const novoItemVendaCriado = await vendasServices.criarRegistro(data_pagamento, data_entrega, data_venda, idProduto, quantidadeProdutoComprado, idLogin ,idVenda); 
+      const novoItemVendaCriado = await itemVendasServices.criarRegistro(parametros); 
       
       //Verifica se a compra foi realizada com sucesso
       if(!novoItemVendaCriado){
@@ -104,6 +111,33 @@ class VendasController{
       }
       
       return res.status(200).json(novoItemVendaCriado);
+    } catch (erro) {
+      next(erro);
+    }
+  }
+
+  static async criarVenda(req, res, next){
+    const {data_pagamento, data_entrega, data_venda, pessoa_id} = req.body;
+
+    try {
+      //Verifica campos em branco
+      const campos = ['data_pagamento','data_entrega' ,'data_venda', 'pessoa_id'];
+      const erroCampos = verificaCamposVazios(req.body, campos);
+      if(erroCampos){
+        return res.status(400).send({mensagem: erroCampos});
+      }
+
+      const venda = {
+        data_pagamento, data_entrega, data_venda, pessoa_id
+      }
+
+      const vendaCriada = await vendasServices.criarRegistro(venda);
+
+      if(!vendaCriada){
+        return res.status(400).send({mensagem: 'Venda não criada'});
+      }
+
+      return res.status(200).send(vendaCriada)
     } catch (erro) {
       next(erro);
     }
@@ -199,7 +233,7 @@ class VendasController{
         return res.status(404).send({mensagem: 'Venda não encontrada ou não associada ao funcionario'});
       }
 
-      return res.status(200).send(recibo)
+      return res.status(200).send(recibo);
     } catch (erro) {
       next(erro);
     }

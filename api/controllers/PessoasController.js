@@ -1,6 +1,6 @@
 const {PessoasServices} =  require("../services/index.js");
 const pessoasServices = new PessoasServices;
-const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
+const {verificaCamposVazios, resgatarIdLogin, verificaId} = require('../helpers/helpers.js');
 const formataCpf = require('../funcoesEspecificas/formatarCpf.js');
 
 
@@ -8,6 +8,7 @@ const formataCpf = require('../funcoesEspecificas/formatarCpf.js');
 class PessoaController {
   static async listarTodasPessoas(__, res, next){
     try{
+
       //Busca todas as pessoas
       const resultadoListaPessoas = await pessoasServices.listarTodos();
 
@@ -20,7 +21,6 @@ class PessoaController {
       return res.status(200).json(resultadoListaPessoas);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -39,7 +39,6 @@ class PessoaController {
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -58,7 +57,6 @@ class PessoaController {
       return res.status(200).json(resultadoListaPessoas)
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -76,7 +74,6 @@ class PessoaController {
       return res.status(200).json(resultadoFiltro);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -85,9 +82,11 @@ class PessoaController {
     try{
 
       //Verifica se id é um número
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
+     
 
       //Busca pessoa pelo id na url
       const resultadoPessoaId = await pessoasServices.listarRegistroPorId(id);
@@ -101,7 +100,6 @@ class PessoaController {
       return res.status(200).json(resultadoPessoaId);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -123,7 +121,6 @@ class PessoaController {
       return res.status(200).json(resultadoPessoaId);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -141,7 +138,8 @@ class PessoaController {
     try{
 
       //Verificando os campos vazios
-      const erroCampos = verificaCamposVazios(req.body, 'nome', 'data_nascimento', 'cpf', 'endereco','funcao', 'ativo');
+      const campos = ['nome', 'data_nascimento', 'cpf', 'endereco','funcao', 'ativo'];
+      const erroCampos = verificaCamposVazios(req.body, campos);
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos})
       }
@@ -163,7 +161,6 @@ class PessoaController {
       return res.status(201).json(novaPessoaCriada) 
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -207,7 +204,6 @@ class PessoaController {
       return res.status(201).json(pessoaAtualizada);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -246,7 +242,6 @@ class PessoaController {
       return res.status(200).json({mensagem: `Id: ${id} deletado`});
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
@@ -265,7 +260,6 @@ class PessoaController {
       return res.status(200).json({mensagem: `Id: ${id} restaurado`});
     } catch (erro) {
       next(erro);
-      console.log(erro);
     }
 
   }
@@ -317,7 +311,6 @@ class PessoaController {
       return res.status(201).json(pessoaAtualizada);
     }catch(erro){
       next(erro);
-      console.log(erro);
     }
   }
 
