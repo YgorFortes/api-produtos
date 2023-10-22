@@ -26,8 +26,9 @@ class ServicosController {
     try {
 
       //Verifica se id é um número
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
       
       //Busca o serviço com numero id
@@ -120,9 +121,10 @@ class ServicosController {
     const novaInforServico = req.body;
     try {
 
-      //checa se id é um númerico
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
       
       //Busca serviço pelo id
@@ -165,10 +167,11 @@ class ServicosController {
     const {id} = req.params;
     try {
 
-      //checa se id é um númerico
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
-      }
+     //Verifica se id é um número
+     const {valido, mensagem} = verificaId(id);
+     if(!valido){
+       return res.status(400).send({mensagem});
+     }
 
       //Busca serviço pelo id
       const servico = await servicosServices.listarRegistroPorId(id);
@@ -198,9 +201,10 @@ class ServicosController {
     const {id} = req.params;
     try {
 
-      //checa se id é um númericoo
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
 
       //Restaura o serviço pelo id
@@ -224,9 +228,10 @@ class ServicosController {
 
     try {
 
-      //checa se id é um númericoo
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'})
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
 
       //Resgata id da tabela login 
