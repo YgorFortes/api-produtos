@@ -27,9 +27,10 @@ class VendasController{
     const {id} = req.params;
     try {
 
-      //Checa se id é um númerico
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'});
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
 
       //Busca a venda pelo seu id
@@ -175,6 +176,13 @@ class VendasController{
     const {id} = req.params;
     try {
 
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
+      }
+
+      //Busca venda por id
       const venda = await vendasServices.listarRegistroPorId(id);
       //Verifica se venda existe 
       if(!venda){
@@ -220,9 +228,10 @@ class VendasController{
       //Resgata id de pessoa logada
       const idLogin = await resgatarIdLogin(req);
 
-      // Checa se id é um númerico
-      if(isNaN(id)){
-        return res.status(400).send({mensagem: 'Id inválido. Digite um número.'});
+      //Verifica se id é um número
+      const {valido, mensagem} = verificaId(id);
+      if(!valido){
+        return res.status(400).send({mensagem});
       }
 
       //Busca o recibo da venda do funcionario logado
