@@ -8,7 +8,7 @@ async function resgatarIdLogin(req){
   return idLogin; 
 }
 
-function verificaCamposVazios(req, ...campos){
+function verificaCamposVazios(req, campos){
   for(let campo of campos){
     if(!req[campo]){
       const mensagem = `O campo ${campo} estar vazio, por favor digite`;
@@ -17,4 +17,12 @@ function verificaCamposVazios(req, ...campos){
   }
 }
 
-module.exports = {resgatarIdLogin, verificaCamposVazios}
+function verificaId(id){
+  if(isNaN(id)){
+    return {valido: false, mensagem: 'Id inválido. Digite um número.'}
+  }else{
+    return {valido: true};
+  }
+}
+
+module.exports = {resgatarIdLogin, verificaCamposVazios, verificaId}

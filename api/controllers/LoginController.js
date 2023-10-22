@@ -13,7 +13,8 @@ class LoginController{
     try {
       
       //Verificando os campos vazios
-      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha', 'confirmarSenha');
+      const campos = ['email', 'senha', 'confirmarSenha'];
+      const erroCampos = verificaCamposVazios(req.body, campos);
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos})
       }
@@ -39,9 +40,17 @@ class LoginController{
 
       //Criptogrfando a senha
       const senhaHash = await criptografaSenha(senha);
-      const novoLogin = await loginServices.criarRegistro({email: emailFormatado, senha: senhaHash});
+      
+      //Criando objeto login
+      const login  = {
+        email: emailFormatado,
+        senha: senhaHash
+      }
 
+      //Criando login
+      const novoLogin = await loginServices.criarRegistro(login);
 
+      //Escondendo senha
       const novoLoginSemSenha = esconderSenha (novoLogin)
 
       return res.status(201).send(novoLoginSemSenha)
@@ -58,7 +67,8 @@ class LoginController{
     try {
 
       //Verificando os campos vazios
-      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha');
+      const campos = ['email', 'senha'];
+      const erroCampos = verificaCamposVazios(req.body, campos);
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos})
       }
@@ -97,10 +107,12 @@ class LoginController{
 
   static async atualizarLogin(req, res, next){
     const {email, senha} =  req.body;
+  
     try {
 
       //Verificando campos 
-      const erroCampos = verificaCamposVazios(req.body, 'email', 'senha');      
+      const campos = ['email', 'senha'];
+      const erroCampos = verificaCamposVazios(req.body, campos);      
       if(erroCampos){
         return res.status(400).send({mensagem: erroCampos})
       }
@@ -115,10 +127,11 @@ class LoginController{
 
       //resgatando idLogin
       const idLogin = await  resgatarIdLogin(req);
+    
 
       //Buscando login e verificando se existe 
-      const login = await loginServices.listarRegistroPorId(idLogin)
-      if(!login){
+      const loginEncontrado = await loginServices.listarRegistroPorId(idLogin)
+      if(!loginEncontrado){
         return res.stus(404).send({mensagem: 'Login não encontrado'});
       }
 
@@ -132,7 +145,9 @@ class LoginController{
       const senhaHash = await criptografaSenha(senha);
 
       //Atualizando login
-      const [resultado] = await loginServices.atualizarRegistro(idLogin, {email: emailFormatado , senha: senhaHash});
+      const login = criarObjetoLogin(emailFormatado, senhaHash);
+
+      const [resultado] = await loginServices.atualizarRegistro(idLogin, login);
 
       //Verifica se pessoa foi cadastrada com sucesso
       if(!resultado){
@@ -147,9 +162,8 @@ class LoginController{
   }
 }
 
-
+//Criptogrfando a senha
 async function criptografaSenha(senha){
-  //Criptogrfando a senha
   const salt = await bcrypt.genSalt(12);
   const senhaHash = await bcrypt.hash(senha, salt);
   return senhaHash
@@ -173,6 +187,13 @@ function verificaCriterioSenha(senha){
 function formatarEmailMinuscula(email){
   const emailFormatado= email.toLowerCase().trim();
   return emailFormatado;
+}
+
+function criarObjetoLogin(email, senha){
+  return {
+    email: email,
+    senha: senha
+  }
 }
 
 
