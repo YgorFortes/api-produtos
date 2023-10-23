@@ -12,8 +12,8 @@ router
 .get('/servicos/:id',verificaFuncao, verificaToken, ServicosController.listaServicosPorId)
 .post('/servicos',verificaToken, ServicosController.criarServico)
 .post('/servicos/:id/restaurar',verificaFuncao, verificaToken, ServicosController.restaurarServico)
-.put('/servicos/:id',verificaFuncao, verificaToken, ServicosController.atualizarServico)
-.put('/servicos/logado/:id', verificaToken, ServicosController.atualizaServicosPessoaLogado)
+.patch('/servicos/:id',verificaFuncao, verificaToken, ServicosController.atualizarServico)
+.patch('/servicos/logado/:id', verificaToken, ServicosController.atualizaServicosPessoaLogado)
 .delete('/servicos/:id',verificaFuncao, verificaToken, ServicosController.deletarServico)
 
 module.exports = router;

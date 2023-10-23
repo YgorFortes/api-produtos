@@ -13,8 +13,8 @@ router
 .get('/vendas/recibo/:id', verificaToken, VendasController.gerarReciboCompra)
 .post('/vendas/:idVenda',verificaToken, VendasController.criarItemVenda)
 .post('/vendas', verificaToken, VendasController.criarVenda)
-.post('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
-.put('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)
+.patch('/vendas/:id/restaurar',verificaToken, VendasController.restaurarVenda)
+.patch('/vendas/:id',verificaToken, verificaFuncao, VendasController.atualizarVenda)
 .delete('/vendas/:id',verificaToken, verificaFuncao, VendasController.deletarVenda)
 
 module.exports = router;

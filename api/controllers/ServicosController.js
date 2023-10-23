@@ -1,6 +1,6 @@
 const {ServicosServices} =  require("../services/index.js");
 const servicosServices = new ServicosServices;
-const {verificaCamposVazios, resgatarIdLogin} = require('../helpers/helpers.js');
+const {verificaCamposVazios, resgatarIdLogin, verificaId} = require('../helpers/helpers.js');
 class ServicosController {
   static async listarServicos(__,res, next){
     try {
