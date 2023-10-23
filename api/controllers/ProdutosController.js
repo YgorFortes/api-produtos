@@ -94,7 +94,7 @@ class ProdutosController{
       quantidade: quantidade
     }
 
-    //Criando where para procurar se é igual
+    //Criando where para procurar se existe produto
     const where = {
       nome : nome,
       modelo: modelo,
@@ -147,15 +147,12 @@ class ProdutosController{
       }
 
       //Atualizando produto
-      const resultado = await produtosServices.atualizarRegistro(id, infoProduto);
+      const resultado = await produtosServices.atualizarRegistro(id, fornecedor_id, infoProduto)
 
       // Verifica se a atualização foi bem sucedida
       if(!resultado){
         return res.status(409).json({mensagem: 'Produto não atualizado'});
       }
-
-      //Associa o fornecedor_id com produto
-      await produtoExiste.setFornecedores(fornecedor_id);
 
       //Buscando o produto atualizado 
       const produtoAtualizado = await produtosServices.listarRegistroPorId(id);

@@ -63,29 +63,29 @@ class ProdutosServices extends Services{
     return database[this.nomeModelo].findAll({where} );
   }
 
-  // async atualizarRegistro(id, fornecedores, novaInformacao){
+  async atualizarRegistro(id, fornecedor_id, novaInformacao){
 
-  //   await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
-  //   const produto = await database[this.nomeModelo].findByPk(id);
+    await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
+    const produto = await database[this.nomeModelo].findByPk(id);
    
-  //  if(fornecedores){
-  //     await produto.setFornecedores(fornecedores);
-  //   }else {
-  //     await produto.getFornecedores(fornecedores);
-  //   }
+   if(fornecedor_id){
+      await produto.setFornecedores(fornecedor_id);
+    }else {
+      await produto.getFornecedores(fornecedor_id);
+    }
     
-  //   return database[this.nomeModelo].findOne( 
-  //     {
-  //       where: {id: Number(id)},
-  //       include: {
-  //         model: database.Fornecedores,
-  //         as: "fornecedores",
-  //         attributes:  ['nome','endereco','telefone','cnpj'],
-  //       }
-  //    }
-  //   );
+    return database[this.nomeModelo].findOne( 
+      {
+        where: {id: Number(id)},
+        include: {
+          model: database.Fornecedores,
+          as: "fornecedores",
+          attributes:  ['nome','endereco','telefone','cnpj'],
+        }
+     }
+    );
      
-  // }
+  }
 
   async desativarProdutoSemEstoque(id){
    return database[this.nomeModelo].destroy({where: {id: Number(id), quantidade: {[Op.lte]: 0 }}});
