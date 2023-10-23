@@ -63,15 +63,15 @@ class FornecedoresServices extends Services{
     return database[this.nomeModelo].findAll({where});
   }
 
-  async atualizarRegistro(id, produtos, novaInformacao){
+  async atualizarRegistro(id, produto_id, novaInformacao){
   
     await database[this.nomeModelo].update(novaInformacao, {where: {id: Number(id)}});
     const fornecedor = await database[this.nomeModelo].findByPk(id);
    
-   if(produtos){
-      await fornecedor.setProdutos(produtos);
+   if(produto_id){
+      await fornecedor.setProdutos(produto_id);
     }else {
-      await fornecedor.getProdutos(produtos);
+      await fornecedor.getProdutos(produto_id);
     }
 
     return database[this.nomeModelo].findOne(
