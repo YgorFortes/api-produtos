@@ -3,7 +3,7 @@ const ServicosServices = require('./ServicosServices.js');
 const VendasServices = require('./VendasServices.js');
 const ProdutosServices = require('./ProdutosServices.js');
 const FornecedoresServices = require('./FornecedoresServices.js');
-const IntemVendasServices = require('./ItemVendasServices.js');
+const ItemVendasServices = require('./ItemVendasServices.js');
 const LoginServices = require('./LoginServices.js');
 
 module.exports = {
@@ -12,6 +12,6 @@ module.exports = {
   VendasServices: VendasServices,
   ProdutosServices: ProdutosServices,
   FornecedoresServices: FornecedoresServices,
-  IntemVendasServices: IntemVendasServices,
+  ItemVendasServices: ItemVendasServices,
   LoginServices: LoginServices,
 }

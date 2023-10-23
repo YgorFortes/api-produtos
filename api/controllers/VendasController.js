@@ -1,8 +1,8 @@
 const { status } = require('init');
 const { verificaCamposVazios, resgatarIdLogin, verificaId } = require('../helpers/helpers.js');
-const {VendasServices, IntemVendasServices} = require('../services/index.js');
+const {VendasServices, ItemVendasServices} = require('../services/index.js');
 const vendasServices = new VendasServices;
-const itemVendasServices = new IntemVendasServices;
+const itemVendasServices = new ItemVendasServices;
 
 
 class VendasController{
