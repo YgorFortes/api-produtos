@@ -1,5 +1,5 @@
 const { status } = require('init');
-const { verificaCamposVazios, resgatarIdLogin } = require('../helpers/helpers.js');
+const { verificaCamposVazios, resgatarIdLogin, verificaId } = require('../helpers/helpers.js');
 const {VendasServices, IntemVendasServices} = require('../services/index.js');
 const vendasServices = new VendasServices;
 const itemVendasServices = new IntemVendasServices;

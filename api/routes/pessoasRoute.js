@@ -13,8 +13,8 @@ router
 .get('/pessoas/:id',verificaToken, verificaFuncao, PessoaController.listarPessoaPorId)
 .post('/pessoas/',verificaToken,  PessoaController.criarPessoa)
 .post('/pessoas/:id/restaurar',  verificaToken, verificaFuncao, PessoaController.restaurarPessoa)
-.put('/pessoas/atualizar', verificaToken,verificaFuncao, PessoaController.atualizarPessoaLogada)
-.put('/pessoas/logada/:id', verificaToken,PessoaController.atualizarPessoa)
+.patch('/pessoas/atualizar', verificaToken,verificaFuncao, PessoaController.atualizarPessoaLogada)
+.patch('/pessoas/logada/:id', verificaToken,PessoaController.atualizarPessoa)
 .delete("/pessoas/:id", verificaToken, verificaFuncao, PessoaController.deletarPessoa)
 
 module.exports = router;

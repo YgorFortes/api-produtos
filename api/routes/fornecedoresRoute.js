@@ -9,7 +9,7 @@ router
 .get('/fornecedores/:id',verificaToken, FornecedorController.listarFonecedorPorId)
 .post('/fornecedores/',verificaToken, FornecedorController.criarFornecedor)
 .post('/fornecedores/:id/restaurar',verificaToken, FornecedorController.restaurarFornecedor)
-.put('/fornecedores/:id',verificaToken, FornecedorController.atualizarFornecedor)
+.patch('/fornecedores/:id',verificaToken, FornecedorController.atualizarFornecedor)
 .delete('/fornecedores/:id',verificaToken, FornecedorController.deletarFornecedor)
   
 
