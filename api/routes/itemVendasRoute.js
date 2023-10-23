@@ -4,11 +4,11 @@ const verificaToken = require('../middlewares/verificaToken.js');
 const router = Router();
 
 router
-.get('/itemVendas/filtro',verificaToken, ItemVendasController.listarItemVendasPorFilro)
+.get('/itemVendas/filtro',verificaToken, ItemVendasController.listarItemVendasPorFiltro)
 .get('/itemVendas',verificaToken, ItemVendasController.listarItemVendas)
 .get('/itemVendas/:id',verificaToken, ItemVendasController.listarItemVendasPorId)
 .post('/itemVendas/:id/restaurar',verificaToken, ItemVendasController.restaurarItemVendas)
-/* .put('/itemVendas/:id', ItemVendasController.atualizarItemVenda) */
+.patch('/itemVendas/:id', ItemVendasController.atualizarItemVenda)
 .delete('/itemVendas/:id',verificaToken, ItemVendasController.deletarItemVenda)
 
 module.exports = router;

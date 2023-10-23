@@ -1,8 +1,10 @@
 const database = require('../models/index.js');
 const Services = require('./services.js');
+const Sequelize = require ('sequelize');
+const Op = Sequelize.Op;
 const associacaoInclude = require('../funcoesEspecificas/funcaoInclude.js')
 
-class IntemVendasService extends Services{
+class ItemVendasServices extends Services{
   constructor(){
     super('ItemVendas');
     this.produtos = new Services('Produtos');
@@ -33,21 +35,41 @@ class IntemVendasService extends Services{
   }
 
   async listarRegistroPorFiltro(parametros){
-    const {idProduto, idVenda} = parametros;
-  
+    const {idProduto, idVenda, valorMinimo, valorMaximo, valor} = parametros;
+
     let where = {};
-  
-    if(idProduto) where.produto_id = idProduto;
-    if(idVenda) where.venda_id = idVenda;
-  
-  
-    if(idVenda) {
-      const include = associacaoInclude(database.Vendas,"id", idVenda)
-      return database[this.nomeModelo].findAll({where, include} );
+    if (valorMinimo) {
+    where.valor = 
+      {
+        [Op.gte]: parseFloat(valorMinimo),
+      };
     }
-  
+
+    if(valorMaximo){
+      where.valor = 
+      {
+        [Op.lte]: parseFloat(valorMaximo),
+      };
+    }
+
+    if(valor) {
+      where.valor = {
+        [Op.gte]: parseFloat(valor) - 1,
+        [Op.lte]: parseFloat(valor) + 1,
+      }
+    }
+
+
     if(idProduto) {
+      where.produto_id = idProduto
       const include = associacaoInclude(database.Produtos,"id", idProduto)
+      return database[this.nomeModelo].findAll({where, include} ); 
+    };
+
+    if(idVenda) {
+      where.venda_id = idVenda;
+      console.log(where)
+      const include = associacaoInclude(database.Vendas,"id", idVenda)
       return database[this.nomeModelo].findAll({where, include} );
     }
   
@@ -55,8 +77,8 @@ class IntemVendasService extends Services{
     if(verificaWhereVazio <1){
       return  [];
     }
-
-    return database[this.nomeModelo].findAll({where} );
+    
+    return database[this.nomeModelo].findAll({where});
   }
 
   async atualizarRegistro(id, novaInformacao){
@@ -130,4 +152,4 @@ class IntemVendasService extends Services{
   
 }
 
-module.exports = IntemVendasService;
+module.exports = ItemVendasServices;
